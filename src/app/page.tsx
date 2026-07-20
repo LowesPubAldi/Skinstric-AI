@@ -1,65 +1,64 @@
-import Image from "next/image";
+import Link from "next/link";
 import styles from "./page.module.css";
 
 export default function Home() {
   return (
-    <div className={styles.page}>
+    <div className={styles.page} id="top">
+      <header className={styles.header}>
+        <div className={styles.headerCluster}>
+          <a className={styles.brand} href="#top">
+            SKINSTRIC
+          </a>
+          <p className={styles.sectionTag}>INTRO</p>
+        </div>
+        <a className={styles.codeButton} href="#experience">
+          ENTER CODE
+        </a>
+      </header>
+
       <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>To get started, edit the page.tsx file.</h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+        <div className={styles.lineTopLeft} aria-hidden="true" />
+        <div className={styles.lineBottomLeft} aria-hidden="true" />
+        <div className={styles.lineTopRight} aria-hidden="true" />
+        <div className={styles.lineBottomRight} aria-hidden="true" />
+
+        <a className={`${styles.sideAction} ${styles.sideActionLeft}`} href="#">
+          <span className={`${styles.actionDiamond} ${styles.actionDiamondLeft}`}>
+            <span className={styles.actionTriangle} aria-hidden="true" />
+          </span>
+          <span>DISCOVER A.I.</span>
+        </a>
+
+        <section className={styles.hero}>
+          <h1 className={styles.title}>
+            <span className={styles.titleLead}>Sophisticated</span>
+            <span className={styles.titleAccent}>skincare</span>
+          </h1>
+          <div className={styles.tabletPanel}>
+            <p className={styles.tabletDescription}>
+              Skinstric developed an A.I. that creates a highly-personalized
+              routine tailored to what your skin needs.
+            </p>
+            <a className={styles.tabletExperience} href="#experience">
+              <span>ENTER EXPERIENCE</span>
+              <span className={styles.experienceDiamond}>
+                <span className={styles.actionTriangle} aria-hidden="true" />
+              </span>
+            </a>
+          </div>
+        </section>
+
+        <Link className={`${styles.sideAction} ${styles.sideActionRight}`} href="/take-test">
+          <span>TAKE TEST</span>
+          <span className={styles.actionDiamond}>
+            <span className={`${styles.actionTriangle} ${styles.actionTriangleRight}`} aria-hidden="true" />
+          </span>
+        </Link>
+
+        <p className={styles.supportingCopy}>
+          SKINSTRIC DEVELOPED AN A.I. THAT CREATES A HIGHLY-PERSONALIZED
+          ROUTINE TAILORED TO WHAT YOUR SKIN NEEDS.
+        </p>
       </main>
     </div>
   );

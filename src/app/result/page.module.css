@@ -1,0 +1,448 @@
+.page {
+  min-height: 100vh;
+  overflow: hidden;
+  color: #111111;
+  background: linear-gradient(180deg, #f9f6ef 0%, #f8f4ec 100%);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 8px 24px 0 30px;
+}
+
+.headerCluster {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.brand {
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: -0.06em;
+}
+
+.sectionTag {
+  position: relative;
+  padding: 0 12px;
+  color: rgba(17, 17, 17, 0.58);
+  font-size: 0.82rem;
+  letter-spacing: 0.16em;
+}
+
+.sectionTag::before,
+.sectionTag::after {
+  position: absolute;
+  top: 0;
+  color: rgba(17, 17, 17, 0.48);
+}
+
+.sectionTag::before {
+  content: "[";
+  left: 0;
+}
+
+.sectionTag::after {
+  content: "]";
+  right: 0;
+}
+
+.codeButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 31px;
+  padding: 0 14px;
+  background: #111111;
+  color: #f8f8f5;
+  font-size: 0.54rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  transition:
+    transform 180ms ease,
+    background-color 180ms ease;
+}
+
+.main {
+  position: relative;
+  display: grid;
+  height: calc(100vh - 48px);
+  padding: 8px 30px 22px;
+  overflow: hidden;
+}
+
+.kicker {
+  position: absolute;
+  top: 10px;
+  left: 30px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+}
+
+.previewFrame {
+  position: absolute;
+  top: 18px;
+  right: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 140px;
+  height: 140px;
+  border: 1px solid rgba(17, 17, 17, 0.13);
+  background: rgba(255, 255, 255, 0.28);
+}
+
+.hero {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  width: min(100%, 1360px);
+  aspect-ratio: 1 / 1;
+  transform: translate(-50%, -50%);
+}
+
+.heroContent {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 220px;
+  width: min(100%, 1180px);
+  transform: translate(-50%, -50%);
+}
+
+.permissionColumn {
+  position: relative;
+  display: grid;
+  align-items: center;
+  justify-items: start;
+  min-height: 430px;
+}
+
+.permissionColumn:first-child {
+  transform: translateY(28px);
+}
+
+.permissionBackdrop {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(100%, 700px);
+  aspect-ratio: 1 / 1;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 0;
+  animation: backdropRotate 42s linear infinite;
+}
+
+.permissionCard {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+}
+
+.permissionCardLeft,
+.permissionCardRight {
+  position: absolute;
+  inset: 0;
+}
+
+.permissionCardLeft .permissionIcon,
+.permissionCardRight .permissionIcon {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.permissionCardLeft .permissionIcon {
+  left: 50%;
+  top: 50%;
+}
+
+.permissionCardLeft .permissionCopy,
+.permissionCardRight .permissionCopy {
+  position: absolute;
+  display: grid;
+  align-items: start;
+  width: max-content;
+}
+
+.permissionCardLeft .permissionCopy {
+  right: calc(4% - 8px);
+  top: 20%;
+  justify-items: start;
+}
+
+.permissionCardRight .permissionCopy {
+  left: 12%;
+  bottom: 25%;
+  justify-items: start;
+}
+
+.permissionIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 146px;
+  height: 146px;
+  flex: 0 0 auto;
+}
+
+.permissionArt {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.diamond {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) rotate(var(--diamond-rotation, 0deg));
+  object-fit: contain;
+  will-change: transform;
+}
+
+.diamondLarge {
+  width: 96%;
+  height: 96%;
+  opacity: 0.72;
+  --diamond-rotation: 0deg;
+}
+
+.diamondMedium {
+  width: 80%;
+  height: 80%;
+  opacity: 0.88;
+  --diamond-rotation: 120deg;
+}
+
+.diamondSmall {
+  width: 64%;
+  height: 64%;
+  opacity: 1;
+  --diamond-rotation: 240deg;
+}
+
+@keyframes backdropRotate {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+.permissionCopy {
+  display: grid;
+  gap: 10px;
+}
+
+.permissionText {
+  color: #111111;
+  display: grid;
+  gap: 2px;
+  width: max-content;
+  font-size: clamp(0.95rem, 0.98vw, 1.12rem);
+  font-weight: 700;
+  line-height: 0.98;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+}
+
+.permissionTextLead {
+  display: block;
+}
+
+.backLink {
+  position: absolute;
+  left: 30px;
+  bottom: 18px;
+  display: inline-flex;
+  align-items: center;
+  gap: 18px;
+  color: #111111;
+  font-size: 0.98rem;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+}
+
+.backDiamond {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid rgba(17, 17, 17, 0.45);
+  transform: rotate(45deg);
+}
+
+.backDiamond::before {
+  content: "";
+  width: 0;
+  height: 0;
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  border-right: 8px solid #111111;
+  transform: rotate(-45deg);
+}
+
+.backLabel {
+  color: #111111;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .codeButton:hover,
+  .backLink:hover {
+    transform: translateY(-2px);
+  }
+
+  .codeButton:hover {
+    background: #2b2b2b;
+  }
+}
+
+@media (max-width: 900px) {
+  .hero {
+    width: min(80vw, 960px);
+  }
+
+  .heroContent {
+    width: min(100%, 860px);
+    gap: 120px;
+  }
+
+  .permissionCard {
+    width: min(100%, 460px);
+    margin-left: 0;
+  }
+
+  .permissionBackdrop {
+    width: min(100%, 560px);
+  }
+
+  .diamondLarge {
+    opacity: 0.9;
+  }
+
+  .diamondMedium {
+    opacity: 0.96;
+  }
+
+  .diamondSmall {
+    opacity: 1;
+  }
+
+  .permissionCardLeft .permissionCopy,
+  .permissionCardRight .permissionCopy {
+    width: auto;
+  }
+}
+
+@media (max-width: 640px) {
+  .page {
+    min-height: 100vh;
+    overflow: visible;
+  }
+
+  .header {
+    align-items: center;
+    gap: 12px;
+    padding-right: 16px;
+    padding-left: 16px;
+  }
+
+  .headerCluster {
+    gap: 14px;
+  }
+
+  .main {
+    height: auto;
+    min-height: calc(100vh - 48px);
+    padding: 16px 20px 24px;
+    overflow: visible;
+  }
+
+  .kicker {
+    position: static;
+  }
+
+  .hero {
+    position: relative;
+    inset: auto;
+    width: min(100%, 380px);
+    margin: 18px auto 0;
+    transform: none;
+  }
+
+  .heroContent {
+    display: grid;
+    grid-template-columns: 1fr;
+    width: min(100%, 340px);
+    gap: 8px;
+  }
+
+  .permissionColumn {
+    min-height: 250px;
+  }
+
+  .permissionBackdrop {
+    width: min(100%, 260px);
+  }
+
+  .permissionCard {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .permissionIcon {
+    position: relative;
+    left: auto;
+    top: auto;
+    transform: none;
+    width: 72px;
+    height: 72px;
+  }
+
+  .permissionText {
+    font-size: clamp(0.86rem, 3.8vw, 1.05rem);
+    text-align: center;
+  }
+
+  .permissionCardLeft .permissionCopy,
+  .permissionCardRight .permissionCopy {
+    position: relative;
+    right: auto;
+    left: auto;
+    top: auto;
+    bottom: auto;
+    width: auto;
+    display: flex;
+    justify-content: center;
+    transform: translateY(56px);
+  }
+
+  .permissionCardLeft .permissionCopy::before,
+  .permissionCardRight .permissionCopy::before,
+  .permissionCardLeft .permissionCopy::after,
+  .permissionCardRight .permissionCopy::after {
+    display: none;
+  }
+
+  .backLink {
+    left: 20px;
+    bottom: 20px;
+  }
+}
