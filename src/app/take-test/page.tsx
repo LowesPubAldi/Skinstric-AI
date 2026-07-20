@@ -7,6 +7,9 @@ import styles from "./page.module.css";
 const phaseOneEndpoint = "https://us-central1-frontend-simplified.cloudfunctions.net/skinstricPhaseOne";
 const nameStorageKey = "skinstric-phase-one-name";
 const locationStorageKey = "skinstric-phase-one-location";
+const endpointStorageKey = "skinstric-phase-one-endpoint";
+const responseStorageKey = "skinstric-phase-one-response";
+const requestTimeoutMs = 12000;
 
 export default function TakeTestPage() {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -23,6 +26,10 @@ export default function TakeTestPage() {
     window.localStorage.setItem(locationStorageKey, city);
   }, [city]);
 
+  useEffect(() => {
+    window.localStorage.setItem(endpointStorageKey, phaseOneEndpoint);
+  }, []);
+
   function isValidEntry(value: string) {
     const trimmedValue = value.trim();
     return /^[A-Za-z][A-Za-z\s'-]*$/.test(trimmedValue) && !/\d/.test(trimmedValue);
@@ -31,7 +38,12 @@ export default function TakeTestPage() {
   async function submitPhaseOne(nameValue: string, locationValue: string) {
     setErrorMessage("");
     setStep("processing");
+    window.localStorage.removeItem(responseStorageKey);
     const startedAt = window.performance.now();
+    const controller = new AbortController();
+    const timeoutId = window.setTimeout(() => {
+      controller.abort();
+    }, requestTimeoutMs);
 
     try {
       const response = await fetch(phaseOneEndpoint, {
@@ -39,6 +51,7 @@ export default function TakeTestPage() {
         headers: {
           "Content-Type": "application/json",
         },
+        signal: controller.signal,
         body: JSON.stringify({ name: nameValue, location: locationValue }),
       });
 
@@ -46,7 +59,19 @@ export default function TakeTestPage() {
         throw new Error("Phase 1 submission failed");
       }
 
-      await response.json().catch(() => null);
+      const responseBody = await response.json().catch(() => null);
+      window.localStorage.setItem(
+        responseStorageKey,
+        JSON.stringify({
+          endpoint: phaseOneEndpoint,
+          request: {
+            name: nameValue,
+            location: locationValue,
+          },
+          response: responseBody,
+          submittedAt: new Date().toISOString(),
+        }),
+      );
       const minimumDuration = 1200;
       const elapsed = window.performance.now() - startedAt;
 
@@ -57,9 +82,16 @@ export default function TakeTestPage() {
       }
 
       setStep("success");
-    } catch {
+    } catch (error) {
       setStep("city");
+      if (error instanceof DOMException && error.name === "AbortError") {
+        setErrorMessage("Request timed out. Please try again.");
+        return;
+      }
+
       setErrorMessage("Submission failed. Please try again.");
+    } finally {
+      window.clearTimeout(timeoutId);
     }
   }
 
@@ -105,8 +137,9 @@ export default function TakeTestPage() {
 
   const showProcessing = step === "processing";
   const showSuccess = step === "success";
-  const titleDisplay = step === "name" ? name || "Introduce Yourself" : city || "City Name";
+  const titleDisplay = step === "name" ? name || "Introduce Yourself" : city || "Your City Name";
   const promptLabel = step === "name" ? "CLICK TO TYPE" : step === "city" ? "ENTER YOUR CITY" : "";
+  const hasTypedValue = (step === "name" ? name : city).trim().length > 0;
 
   return (
     <div className={styles.page}>
@@ -136,7 +169,11 @@ export default function TakeTestPage() {
             <p className={styles.errorMessage} aria-live="polite">
               {errorMessage || "\u00A0"}
             </p>
-            {!showProcessing && !showSuccess && <div className={styles.titleDisplay}>{titleDisplay}</div>}
+            {!showProcessing && !showSuccess && (
+              <div className={`${styles.titleDisplay} ${hasTypedValue ? styles.titleDisplayActive : ""}`}>
+                {titleDisplay}
+              </div>
+            )}
             {!showProcessing && !showSuccess && (
               <input
                 ref={inputRef}
@@ -144,6 +181,10 @@ export default function TakeTestPage() {
                 type="text"
                 value={step === "name" ? name : city}
                 onChange={(event) => {
+                  if (errorMessage) {
+                    setErrorMessage("");
+                  }
+
                   if (step === "name") {
                     setName(event.target.value);
                     return;
@@ -162,6 +203,7 @@ export default function TakeTestPage() {
             {showProcessing && (
               <div className={styles.processingState} aria-live="polite">
                 <div className={styles.processingTitle}>Processing Submission</div>
+                <div className={styles.processingSubtitle}>This may take a few seconds</div>
                 <div className={styles.processingDots} aria-hidden="true">
                   <span className={styles.processingDot} style={{ animationDelay: "0ms" }} />
                   <span className={styles.processingDot} style={{ animationDelay: "120ms" }} />
