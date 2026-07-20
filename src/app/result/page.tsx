@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import styles from "./page.module.css";
 
@@ -11,8 +12,21 @@ const cameraIconSrc = "/result-assets/camera-icon.png";
 const galleryIconSrc = "/result-assets/gallery-icon.png";
 const phaseTwoImageStorageKey = "skinstric-phase-two-image-base64";
 const phaseTwoImageSourceStorageKey = "skinstric-phase-two-image-source";
+const phaseTwoAnalysisStorageKey = "skinstric-phase-two-analysis";
+const phaseTwoEndpoint = "https://us-central1-frontend-simplified.cloudfunctions.net/skinstricPhaseTwo";
+
+type DemographicGroup = "race" | "age" | "gender";
+
+type DemographicResults = Record<DemographicGroup, Array<{ label: string; value: number }>>;
+
+type PhaseTwoApiResponse = {
+  success?: boolean;
+  message?: string;
+  data?: Partial<Record<DemographicGroup, Record<string, number>>>;
+};
 
 export default function ResultPage() {
+  const router = useRouter();
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const galleryInputRef = useRef<HTMLInputElement>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
@@ -26,7 +40,37 @@ export default function ResultPage() {
 
     setPreviewImage(savedImage);
     setPreviewStatus("ready");
+
+    const savedAnalysis = window.localStorage.getItem(phaseTwoAnalysisStorageKey);
+    if (!savedAnalysis) {
+      return;
+    }
+
+    try {
+      const parsedAnalysis = JSON.parse(savedAnalysis) as {
+        message?: string;
+        results?: DemographicResults;
+      };
+
+      if (parsedAnalysis.results) {
+        setDemographicResults(parsedAnalysis.results);
+        setAnalysisStatus("ready");
+        setAnalysisMessage(parsedAnalysis.message ?? "AI analysis complete");
+      }
+    } catch {
+      window.localStorage.removeItem(phaseTwoAnalysisStorageKey);
+    }
   }, []);
+
+  function sortDemographicGroup(values: Record<string, number>) {
+    return Object.entries(values)
+      .map(([label, value]) => ({ label, value }))
+      .sort((first, second) => second.value - first.value);
+  }
+
+  function toPercentage(value: number) {
+    return `${(value * 100).toFixed(1)}%`;
+  }
 
   function convertFileToBase64(file: File) {
     return new Promise<string>((resolve, reject) => {
@@ -44,6 +88,51 @@ export default function ResultPage() {
     });
   }
 
+  async function submitPhaseTwo(imageDataUrl: string, source: "camera" | "gallery") {
+    const base64Payload = imageDataUrl.includes(",") ? imageDataUrl.split(",")[1] : imageDataUrl;
+    setPreviewStatus("converting");
+
+    try {
+      const response = await fetch(phaseTwoEndpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ image: base64Payload }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Phase 2 submission failed");
+      }
+
+      const body = (await response.json()) as PhaseTwoApiResponse;
+      const data = body.data ?? {};
+      const results = {
+        race: data.race ? sortDemographicGroup(data.race) : [],
+        age: data.age ? sortDemographicGroup(data.age) : [],
+        gender: data.gender ? sortDemographicGroup(data.gender) : [],
+      };
+
+      window.localStorage.setItem(
+        phaseTwoAnalysisStorageKey,
+        JSON.stringify({
+          endpoint: phaseTwoEndpoint,
+          source,
+          response: body,
+          results,
+          message: body.message ?? "AI analysis complete",
+          submittedAt: new Date().toISOString(),
+        }),
+      );
+
+      window.localStorage.setItem("skinstric-phase-two-analysis-ready", "true");
+      router.push("/select");
+    } catch {
+      window.localStorage.removeItem(phaseTwoAnalysisStorageKey);
+      setPreviewStatus("error");
+    }
+  }
+
   async function handleFileSelection(fileList: FileList | null, source: "camera" | "gallery") {
     const file = fileList?.[0];
     if (!file) {
@@ -58,6 +147,7 @@ export default function ResultPage() {
       window.localStorage.setItem(phaseTwoImageSourceStorageKey, source);
       setPreviewImage(base64Image);
       setPreviewStatus("ready");
+      void submitPhaseTwo(base64Image, source);
     } catch {
       setPreviewStatus("error");
     }
@@ -102,7 +192,9 @@ export default function ResultPage() {
               <button
                 type="button"
                 className={`${styles.permissionCard} ${styles.permissionCardLeft}`}
-                onClick={() => cameraInputRef.current?.click()}
+                onClick={() => {
+                  cameraInputRef.current?.click();
+                }}
               >
                 <span className={styles.permissionIcon} aria-hidden="true">
                   <img className={styles.permissionArt} src={cameraIconSrc} alt="" />
@@ -125,7 +217,9 @@ export default function ResultPage() {
               <button
                 type="button"
                 className={`${styles.permissionCard} ${styles.permissionCardRight}`}
-                onClick={() => galleryInputRef.current?.click()}
+                onClick={() => {
+                  galleryInputRef.current?.click();
+                }}
               >
                 <span className={styles.permissionIcon} aria-hidden="true">
                   <img className={styles.permissionArt} src={galleryIconSrc} alt="" />
@@ -147,7 +241,14 @@ export default function ResultPage() {
             accept="image/*"
             capture="user"
             onChange={(event) => {
-              void handleFileSelection(event.target.files, "camera");
+              const imageFile = event.target.files?.[0];
+              void handleFileSelection(event.target.files, "camera").then(() => {
+                if (imageFile) {
+                  void convertFileToBase64(imageFile).then((base64Image) => {
+                    void submitPhaseTwo(base64Image, "camera");
+                  });
+                }
+              });
               event.currentTarget.value = "";
             }}
           />
@@ -157,7 +258,14 @@ export default function ResultPage() {
             type="file"
             accept="image/*"
             onChange={(event) => {
-              void handleFileSelection(event.target.files, "gallery");
+              const imageFile = event.target.files?.[0];
+              void handleFileSelection(event.target.files, "gallery").then(() => {
+                if (imageFile) {
+                  void convertFileToBase64(imageFile).then((base64Image) => {
+                    void submitPhaseTwo(base64Image, "gallery");
+                  });
+                }
+              });
               event.currentTarget.value = "";
             }}
           />
