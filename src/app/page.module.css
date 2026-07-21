@@ -351,6 +351,7 @@
 
   .titleAccent {
     transform: none;
+    margin-top: -18px;
   }
 
   .tabletPanel {
@@ -467,50 +468,59 @@
   }
 
   .hero {
-    width: min(100%, 300px);
-    margin-top: 88px;
+    width: 300px;
+    height: 400px;
+    margin-top: 74px;
     text-align: center;
   }
 
+  .titleAccent {
+    transform: none;
+    margin-top: -26px;
+  }
+
   .hero::before {
-    left: 52%;
+    left: 50%;
     top: 50%;
-    width: min(62vw, 206px);
-    height: min(62vw, 206px);
+    width: 318px;
+    height: 318px;
   }
 
   .hero::after {
-    left: 52%;
+    left: 50%;
     top: 50%;
-    width: min(49vw, 162px);
-    height: min(49vw, 162px);
+    width: 250px;
+    height: 250px;
   }
 
   .title {
-    font-size: clamp(2.2rem, 11.5vw, 2.7rem);
-    line-height: 0.94;
+    gap: 0;
+    margin-top: 106px;
+    font-size: clamp(2.35rem, 12.4vw, 3rem);
+    line-height: 0.82;
     text-align: center;
   }
 
   .tabletPanel {
     gap: 8px;
-    margin-top: 10px;
+    margin-top: -26px;
   }
 
   .tabletDescription {
-    width: min(100%, 245px);
-    font-size: 0.62rem;
-    line-height: 1.32;
+    width: min(100%, 270px);
+    font-size: 0.66rem;
+    font-weight: 700;
+    line-height: 1.26;
   }
 
   .tabletExperience {
     gap: 8px;
-    font-size: 0.54rem;
+    font-size: 0.64rem;
   }
 
   .experienceDiamond {
-    width: 24px;
-    height: 24px;
+    width: 30px;
+    height: 30px;
   }
 
   .codeButton {
@@ -519,5 +529,26 @@
     padding: 0 11px;
     min-height: 26px;
     font-size: 0.46rem;
+  }
+}
+
+@media (max-width: 375px) {
+  .title {
+    gap: 0;
+    margin-top: 104px;
+    line-height: 0.8;
+  }
+
+  .titleAccent {
+    margin-top: -34px;
+  }
+
+  .tabletPanel {
+    margin-top: -30px;
+  }
+
+  .tabletExperience {
+    margin-top: 0;
+    transform: translateY(-60px);
   }
 }

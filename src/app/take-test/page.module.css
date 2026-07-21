@@ -103,7 +103,7 @@
 .square {
   position: absolute;
   inset: 0;
-  border: 2px dotted rgba(17, 17, 17, 0.18);
+  border: 3px dotted rgba(17, 17, 17, 0.28);
   animation-name: spinClockwise;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
@@ -112,22 +112,22 @@
 
 .squareOuter {
   opacity: 0.34;
-  animation-duration: 38s;
-  transform: rotate(9deg) scale(0.94);
+  animation-duration: 32s;
+  transform: rotate(0deg) scale(0.94);
 }
 
 .squareMiddle {
   inset: 12.5%;
   opacity: 0.26;
-  animation-duration: 30s;
-  transform: rotate(-5deg) scale(0.93);
+  animation-duration: 32s;
+  transform: rotate(120deg) scale(0.93);
 }
 
 .squareInner {
   inset: 14.5%;
   opacity: 0.72;
-  animation-duration: 24s;
-  transform: rotate(43deg) scale(0.9);
+  animation-duration: 32s;
+  transform: rotate(240deg) scale(0.9);
 }
 
 .heroContent {
