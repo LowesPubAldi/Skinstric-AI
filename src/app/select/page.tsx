@@ -42,10 +42,10 @@ export default function SelectPage() {
             <span className={styles.diamondLabel}>DEMOGRAPHICS</span>
           </Link>
           <div className={`${styles.diamondTile} ${styles.diamondLeft} ${styles.diamondDisabled}`}>
-            <span className={styles.diamondLabel}>COSMETIC CONCERNS</span>
+            <span className={styles.diamondLabel}>SKIN TYPE DETAILS</span>
           </div>
           <div className={`${styles.diamondTile} ${styles.diamondRight} ${styles.diamondDisabled}`}>
-            <span className={styles.diamondLabel}>SKIN TYPE DETAILS</span>
+            <span className={styles.diamondLabel}>COSMETIC CONCERNS</span>
           </div>
           <div className={`${styles.diamondTile} ${styles.diamondBottom} ${styles.diamondDisabled}`}>
             <span className={styles.diamondLabel}>WEATHER</span>

@@ -42,6 +42,7 @@ export default function ResultPage() {
 
     return window.localStorage.getItem(phaseTwoImageStorageKey) ? "ready" : "idle";
   });
+  const [analysisNotice, setAnalysisNotice] = useState<string | null>(null);
   const isSubmitting = previewStatus === "converting";
 
   function sortDemographicGroup(values: Record<string, number>) {
@@ -76,7 +77,7 @@ export default function ResultPage() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ Image: base64Payload }),
+        body: JSON.stringify({ image: base64Payload }),
       });
 
       if (!response.ok) {
@@ -104,9 +105,14 @@ export default function ResultPage() {
       );
 
       window.localStorage.setItem("skinstric-phase-two-analysis-ready", "true");
+      setAnalysisNotice("skinstric-514uqepz7-shalimar-cards-projects.vercel.app says Image anaylzed succesfully!");
+      await new Promise((resolve) => {
+        window.setTimeout(resolve, 1100);
+      });
       router.push("/select");
     } catch {
       window.localStorage.removeItem(phaseTwoAnalysisStorageKey);
+      setAnalysisNotice(null);
       setPreviewStatus("error");
     }
   }
@@ -147,6 +153,12 @@ export default function ResultPage() {
       </header>
 
       <main className={styles.main}>
+        {analysisNotice && (
+          <div className={styles.analysisNotice} role="status" aria-live="polite">
+            {analysisNotice}
+          </div>
+        )}
+
         <p className={styles.kicker}>TO START ANALYSIS</p>
         <div className={styles.previewFrame}>
           {!previewImage && previewStatus !== "converting" && previewStatus !== "error" && (

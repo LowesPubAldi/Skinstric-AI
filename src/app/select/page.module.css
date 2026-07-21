@@ -106,14 +106,22 @@
   content: "";
   position: absolute;
   inset: -72px;
-  border: 1px dotted rgba(17, 17, 17, 0.18);
+  border: 2px dotted rgba(17, 17, 17, 0.22);
   opacity: 0;
   pointer-events: none;
-  transition: opacity 140ms ease;
 }
 
-.diamondStage:has(.diamondTile:hover)::after {
+.diamondStage:hover::after {
   opacity: 1;
+}
+
+.diamondStage:has(.diamondLeft:hover)::after,
+.diamondStage:has(.diamondRight:hover)::after {
+  inset: -108px;
+}
+
+.diamondStage:has(.diamondBottom:hover)::after {
+  inset: -144px;
 }
 
 .diamondTile {
@@ -125,7 +133,7 @@
   height: 100%;
   background: #efeff2;
   box-shadow: inset 0 0 0 6px #fafafa;
-  transition: background-color 140ms ease, box-shadow 140ms ease;
+  transition: background-color 120ms ease;
 }
 
 .diamondTile:hover {
@@ -145,47 +153,6 @@
 
 .diamondDisabled * {
   cursor: not-allowed;
-}
-
-.diamondDisabled::before,
-.diamondDisabled::after {
-  position: absolute;
-  opacity: 0;
-  transition: opacity 140ms ease, transform 140ms ease;
-}
-
-.diamondDisabled::before {
-  content: "";
-  top: 10px;
-  right: 10px;
-  width: 18px;
-  height: 18px;
-  border: 2px solid #c93a3a;
-  border-radius: 999px;
-  transform: rotate(-45deg) scale(0.84);
-}
-
-.diamondDisabled::after {
-  content: "";
-  top: 19px;
-  right: 13px;
-  width: 14px;
-  height: 2px;
-  background: #c93a3a;
-  transform: rotate(-80deg) scaleX(0.84);
-}
-
-.diamondDisabled:hover::before,
-.diamondDisabled:hover::after {
-  opacity: 1;
-}
-
-.diamondDisabled:hover::before {
-  transform: rotate(-45deg) scale(1);
-}
-
-.diamondDisabled:hover::after {
-  transform: rotate(-80deg) scaleX(1);
 }
 
 .diamondLabel {
