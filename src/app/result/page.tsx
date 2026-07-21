@@ -1,8 +1,9 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import styles from "./page.module.css";
 
 const diamondLargeSrc = "/result-assets/ResDiamond-large.png";
@@ -17,8 +18,6 @@ const phaseTwoEndpoint = "https://us-central1-frontend-simplified.cloudfunctions
 
 type DemographicGroup = "race" | "age" | "gender";
 
-type DemographicResults = Record<DemographicGroup, Array<{ label: string; value: number }>>;
-
 type PhaseTwoApiResponse = {
   success?: boolean;
   message?: string;
@@ -29,47 +28,26 @@ export default function ResultPage() {
   const router = useRouter();
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const galleryInputRef = useRef<HTMLInputElement>(null);
-  const [previewImage, setPreviewImage] = useState<string | null>(null);
-  const [previewStatus, setPreviewStatus] = useState<"idle" | "converting" | "ready" | "error">("idle");
-
-  useEffect(() => {
-    const savedImage = window.localStorage.getItem(phaseTwoImageStorageKey);
-    if (!savedImage) {
-      return;
+  const [previewImage, setPreviewImage] = useState<string | null>(() => {
+    if (typeof window === "undefined") {
+      return null;
     }
 
-    setPreviewImage(savedImage);
-    setPreviewStatus("ready");
-
-    const savedAnalysis = window.localStorage.getItem(phaseTwoAnalysisStorageKey);
-    if (!savedAnalysis) {
-      return;
+    return window.localStorage.getItem(phaseTwoImageStorageKey);
+  });
+  const [previewStatus, setPreviewStatus] = useState<"idle" | "converting" | "ready" | "error">(() => {
+    if (typeof window === "undefined") {
+      return "idle";
     }
 
-    try {
-      const parsedAnalysis = JSON.parse(savedAnalysis) as {
-        message?: string;
-        results?: DemographicResults;
-      };
-
-      if (parsedAnalysis.results) {
-        setDemographicResults(parsedAnalysis.results);
-        setAnalysisStatus("ready");
-        setAnalysisMessage(parsedAnalysis.message ?? "AI analysis complete");
-      }
-    } catch {
-      window.localStorage.removeItem(phaseTwoAnalysisStorageKey);
-    }
-  }, []);
+    return window.localStorage.getItem(phaseTwoImageStorageKey) ? "ready" : "idle";
+  });
+  const isSubmitting = previewStatus === "converting";
 
   function sortDemographicGroup(values: Record<string, number>) {
     return Object.entries(values)
       .map(([label, value]) => ({ label, value }))
       .sort((first, second) => second.value - first.value);
-  }
-
-  function toPercentage(value: number) {
-    return `${(value * 100).toFixed(1)}%`;
   }
 
   function convertFileToBase64(file: File) {
@@ -98,7 +76,7 @@ export default function ResultPage() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ image: base64Payload }),
+        body: JSON.stringify({ Image: base64Payload }),
       });
 
       if (!response.ok) {
@@ -174,30 +152,45 @@ export default function ResultPage() {
           {!previewImage && previewStatus !== "converting" && previewStatus !== "error" && (
             <p className={styles.previewLabel}>Preview</p>
           )}
-          {previewStatus === "converting" && <p className={styles.previewLabel}>Preparing image...</p>}
+          {previewStatus === "converting" && <div className={styles.previewSkeleton} aria-hidden="true" />}
           {previewStatus === "error" && <p className={styles.previewLabel}>Upload failed</p>}
           {previewImage && (
-            <img className={styles.previewImage} src={previewImage} alt="Selected for analysis" />
+            <Image
+              className={styles.previewImage}
+              src={previewImage}
+              alt="Selected for analysis"
+              width={140}
+              height={140}
+              unoptimized
+            />
           )}
         </div>
 
         <section className={styles.hero} aria-label="Result preview">
+          {isSubmitting && (
+            <div className={styles.heroSkeleton} aria-hidden="true">
+              <span className={styles.heroSkeletonLine} />
+              <span className={styles.heroSkeletonLine} />
+              <span className={`${styles.heroSkeletonLine} ${styles.heroSkeletonLineShort}`} />
+            </div>
+          )}
           <div className={styles.heroContent}>
             <div className={styles.permissionColumn}>
               <div className={styles.permissionBackdrop} aria-hidden="true">
-                <img className={`${styles.diamond} ${styles.diamondLarge}`} src={diamondLargeSrc} alt="" />
-                <img className={`${styles.diamond} ${styles.diamondMedium}`} src={diamondMediumSrc} alt="" />
-                <img className={`${styles.diamond} ${styles.diamondSmall}`} src={diamondSmallSrc} alt="" />
+                <Image className={`${styles.diamond} ${styles.diamondLarge}`} src={diamondLargeSrc} alt="" width={700} height={700} />
+                <Image className={`${styles.diamond} ${styles.diamondMedium}`} src={diamondMediumSrc} alt="" width={700} height={700} />
+                <Image className={`${styles.diamond} ${styles.diamondSmall}`} src={diamondSmallSrc} alt="" width={700} height={700} />
               </div>
               <button
                 type="button"
                 className={`${styles.permissionCard} ${styles.permissionCardLeft}`}
+                disabled={isSubmitting}
                 onClick={() => {
                   cameraInputRef.current?.click();
                 }}
               >
                 <span className={styles.permissionIcon} aria-hidden="true">
-                  <img className={styles.permissionArt} src={cameraIconSrc} alt="" />
+                  <Image className={styles.permissionArt} src={cameraIconSrc} alt="" width={146} height={146} />
                 </span>
                 <div className={styles.permissionCopy}>
                   <p className={styles.permissionText}>
@@ -210,19 +203,20 @@ export default function ResultPage() {
 
             <div className={styles.permissionColumn}>
               <div className={styles.permissionBackdrop} aria-hidden="true">
-                <img className={`${styles.diamond} ${styles.diamondLarge}`} src={diamondLargeSrc} alt="" />
-                <img className={`${styles.diamond} ${styles.diamondMedium}`} src={diamondMediumSrc} alt="" />
-                <img className={`${styles.diamond} ${styles.diamondSmall}`} src={diamondSmallSrc} alt="" />
+                <Image className={`${styles.diamond} ${styles.diamondLarge}`} src={diamondLargeSrc} alt="" width={700} height={700} />
+                <Image className={`${styles.diamond} ${styles.diamondMedium}`} src={diamondMediumSrc} alt="" width={700} height={700} />
+                <Image className={`${styles.diamond} ${styles.diamondSmall}`} src={diamondSmallSrc} alt="" width={700} height={700} />
               </div>
               <button
                 type="button"
                 className={`${styles.permissionCard} ${styles.permissionCardRight}`}
+                disabled={isSubmitting}
                 onClick={() => {
                   galleryInputRef.current?.click();
                 }}
               >
                 <span className={styles.permissionIcon} aria-hidden="true">
-                  <img className={styles.permissionArt} src={galleryIconSrc} alt="" />
+                  <Image className={styles.permissionArt} src={galleryIconSrc} alt="" width={146} height={146} />
                 </span>
                 <div className={styles.permissionCopy}>
                   <p className={styles.permissionText}>
@@ -241,14 +235,7 @@ export default function ResultPage() {
             accept="image/*"
             capture="user"
             onChange={(event) => {
-              const imageFile = event.target.files?.[0];
-              void handleFileSelection(event.target.files, "camera").then(() => {
-                if (imageFile) {
-                  void convertFileToBase64(imageFile).then((base64Image) => {
-                    void submitPhaseTwo(base64Image, "camera");
-                  });
-                }
-              });
+              void handleFileSelection(event.target.files, "camera");
               event.currentTarget.value = "";
             }}
           />
@@ -258,14 +245,7 @@ export default function ResultPage() {
             type="file"
             accept="image/*"
             onChange={(event) => {
-              const imageFile = event.target.files?.[0];
-              void handleFileSelection(event.target.files, "gallery").then(() => {
-                if (imageFile) {
-                  void convertFileToBase64(imageFile).then((base64Image) => {
-                    void submitPhaseTwo(base64Image, "gallery");
-                  });
-                }
-              });
+              void handleFileSelection(event.target.files, "gallery");
               event.currentTarget.value = "";
             }}
           />

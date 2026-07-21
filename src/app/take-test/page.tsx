@@ -204,6 +204,11 @@ export default function TakeTestPage() {
               <div className={styles.processingState} aria-live="polite">
                 <div className={styles.processingTitle}>Processing Submission</div>
                 <div className={styles.processingSubtitle}>This may take a few seconds</div>
+                <div className={styles.processingSkeleton} aria-hidden="true">
+                  <span className={styles.processingSkeletonLine} />
+                  <span className={styles.processingSkeletonLine} />
+                  <span className={`${styles.processingSkeletonLine} ${styles.processingSkeletonLineShort}`} />
+                </div>
                 <div className={styles.processingDots} aria-hidden="true">
                   <span className={styles.processingDot} style={{ animationDelay: "0ms" }} />
                   <span className={styles.processingDot} style={{ animationDelay: "120ms" }} />

@@ -110,6 +110,14 @@
   object-fit: cover;
 }
 
+.previewSkeleton {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(110deg, rgba(17, 17, 17, 0.07) 8%, rgba(17, 17, 17, 0.16) 18%, rgba(17, 17, 17, 0.07) 33%);
+  background-size: 200% 100%;
+  animation: shimmer 1.1s linear infinite;
+}
+
 .analysisPanel {
   position: absolute;
   left: 30px;
@@ -211,6 +219,29 @@
   transform: translate(-50%, -50%);
 }
 
+.heroSkeleton {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 3;
+  display: grid;
+  gap: 10px;
+  width: min(58%, 460px);
+  transform: translate(-50%, -50%);
+}
+
+.heroSkeletonLine {
+  height: 14px;
+  border-radius: 999px;
+  background: linear-gradient(110deg, rgba(17, 17, 17, 0.08) 8%, rgba(17, 17, 17, 0.18) 18%, rgba(17, 17, 17, 0.08) 33%);
+  background-size: 200% 100%;
+  animation: shimmer 1.1s linear infinite;
+}
+
+.heroSkeletonLineShort {
+  width: 72%;
+}
+
 .heroContent {
   position: absolute;
   inset: 50% auto auto 50%;
@@ -256,6 +287,11 @@
   padding: 0;
   text-align: inherit;
   cursor: pointer;
+}
+
+.permissionCard:disabled {
+  cursor: default;
+  opacity: 0.55;
 }
 
 .permissionCardLeft,
@@ -359,6 +395,16 @@
 
   to {
     transform: rotate(360deg);
+  }
+}
+
+@keyframes shimmer {
+  from {
+    background-position: 100% 0;
+  }
+
+  to {
+    background-position: -100% 0;
   }
 }
 

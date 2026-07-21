@@ -38,16 +38,16 @@ export default function SelectPage() {
         </div>
 
         <section className={styles.diamondStage} aria-label="A.I. analysis stage">
-          <div className={`${styles.diamondTile} ${styles.diamondTop}`}>
+          <Link className={`${styles.diamondTile} ${styles.diamondTop} ${styles.diamondLink}`} href="/summary">
             <span className={styles.diamondLabel}>DEMOGRAPHICS</span>
-          </div>
-          <div className={`${styles.diamondTile} ${styles.diamondLeft}`}>
+          </Link>
+          <div className={`${styles.diamondTile} ${styles.diamondLeft} ${styles.diamondDisabled}`}>
             <span className={styles.diamondLabel}>COSMETIC CONCERNS</span>
           </div>
-          <div className={`${styles.diamondTile} ${styles.diamondRight}`}>
+          <div className={`${styles.diamondTile} ${styles.diamondRight} ${styles.diamondDisabled}`}>
             <span className={styles.diamondLabel}>SKIN TYPE DETAILS</span>
           </div>
-          <div className={`${styles.diamondTile} ${styles.diamondBottom}`}>
+          <div className={`${styles.diamondTile} ${styles.diamondBottom} ${styles.diamondDisabled}`}>
             <span className={styles.diamondLabel}>WEATHER</span>
           </div>
         </section>

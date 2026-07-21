@@ -1,0 +1,537 @@
+.page {
+  min-height: 100vh;
+  overflow: hidden;
+  color: #191c20;
+  background: #fcfcfc;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 10px 28px 0;
+}
+
+.headerCluster {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.brand {
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: -0.06em;
+}
+
+.sectionTag {
+  position: relative;
+  padding: 0 12px;
+  color: rgba(25, 28, 32, 0.54);
+  font-size: 0.75rem;
+  letter-spacing: 0.16em;
+}
+
+.sectionTag::before,
+.sectionTag::after {
+  position: absolute;
+  top: 0;
+  color: rgba(25, 28, 32, 0.42);
+}
+
+.sectionTag::before {
+  content: "[";
+  left: 0;
+}
+
+.sectionTag::after {
+  content: "]";
+  right: 0;
+}
+
+.codeButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 30px;
+  padding: 0 14px;
+  background: #1a1c1f;
+  color: #f8f8f5;
+  font-size: 0.52rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.main {
+  position: relative;
+  min-height: calc(100vh - 46px);
+  padding: 14px 28px 70px;
+}
+
+.heroCopy {
+  display: grid;
+  gap: 4px;
+  width: max-content;
+}
+
+.kicker {
+  font-size: 1.55rem;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+}
+
+.title {
+  font-size: clamp(2.25rem, 4.5vw, 4rem);
+  font-weight: 500;
+  letter-spacing: -0.05em;
+  line-height: 0.92;
+}
+
+.subtitle {
+  font-size: 1.35rem;
+  font-weight: 500;
+  letter-spacing: -0.04em;
+}
+
+.infoMessage,
+.emptyState {
+  margin-top: 18px;
+  color: rgba(25, 28, 32, 0.72);
+  font-size: 0.9rem;
+}
+
+.emptyState {
+  display: grid;
+  gap: 8px;
+}
+
+.inlineLink {
+  color: #1a1c1f;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.summaryStage {
+  display: grid;
+  grid-template-columns: 172px minmax(380px, 1fr) 360px;
+  gap: 16px;
+  margin-top: 34px;
+}
+
+.leftStack {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+}
+
+.leftTile {
+  display: grid;
+  gap: 4px;
+  padding: 12px 12px 11px;
+  border: 1px solid rgba(25, 28, 32, 0.32);
+  background: #f1f2f5;
+  color: #1b1f24;
+  text-align: left;
+  cursor: pointer;
+}
+
+.leftTileActive {
+  background: #1e2125;
+  color: #f7f8fa;
+}
+
+.leftValue {
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  white-space: nowrap;
+  text-transform: capitalize;
+}
+
+.leftLabel {
+  font-size: 1.45rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.centerPanel {
+  min-height: 380px;
+  border: 1px solid rgba(25, 28, 32, 0.26);
+  background: #f1f2f5;
+  padding: 16px 22px;
+  display: grid;
+  grid-template-rows: auto 1fr;
+}
+
+.focusLabel {
+  font-size: 2.4rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  text-transform: capitalize;
+}
+
+.donut {
+  --score-angle: 0deg;
+  justify-self: end;
+  align-self: center;
+  position: relative;
+  width: min(29vw, 380px);
+  aspect-ratio: 1 / 1;
+  border-radius: 999px;
+  background: conic-gradient(#1d2024 var(--score-angle), #d7d8dc 0deg);
+  margin-right: 10px;
+}
+
+.donut::before {
+  content: "";
+  position: absolute;
+  inset: 7px;
+  border-radius: inherit;
+  background: #f1f2f5;
+}
+
+.donutInner {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.6rem;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  z-index: 1;
+}
+
+.rightTable {
+  border: 1px solid rgba(25, 28, 32, 0.24);
+  background: #f1f2f5;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  min-height: 380px;
+}
+
+.tableHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 17px 20px;
+  border-bottom: 1px solid rgba(25, 28, 32, 0.26);
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.tableBody {
+  display: grid;
+  align-content: start;
+}
+
+.tableRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  padding: 16px 20px;
+  border: 0;
+  border-bottom: 1px solid rgba(25, 28, 32, 0.08);
+  background: transparent;
+  color: #1b1f24;
+  text-align: left;
+  cursor: pointer;
+}
+
+.tableRow:last-child {
+  border-bottom: 0;
+}
+
+.tableRowActive {
+  background: #1e2125;
+  color: #f7f8fa;
+}
+
+.rowLabelWrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.rowDiamond {
+  width: 8px;
+  height: 8px;
+  border: 1px solid currentColor;
+  transform: rotate(45deg);
+  flex: 0 0 auto;
+}
+
+.rowLabel {
+  font-size: 1.5rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.12;
+  text-transform: capitalize;
+}
+
+.rowValue {
+  font-size: 1.42rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.mobileFooter {
+  display: none;
+}
+
+.mobileFooterDiamond {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 58px;
+  height: 58px;
+  border: 1px solid rgba(25, 28, 32, 0.58);
+  color: #1b1f24;
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  transform: rotate(45deg);
+}
+
+.mobileFooterDiamond:focus-visible {
+  outline: 2px solid rgba(25, 28, 32, 0.35);
+  outline-offset: 2px;
+}
+
+.mobileFooterDiamond:hover {
+  background: rgba(25, 28, 32, 0.06);
+}
+
+.mobileFooterLabel {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(-45deg);
+}
+
+@media (max-width: 1180px) {
+  .summaryStage {
+    grid-template-columns: 160px minmax(300px, 1fr) 320px;
+  }
+
+  .focusLabel {
+    font-size: 2rem;
+  }
+
+  .donut {
+    width: min(35vw, 350px);
+  }
+}
+
+@media (max-width: 768px) and (min-width: 641px) {
+  .main {
+    padding: 16px 28px 18px;
+  }
+
+  .summaryStage {
+    grid-template-columns: 104px minmax(0, 1fr) 182px;
+    gap: 16px;
+    margin-top: 28px;
+  }
+
+  .leftStack {
+    gap: 12px;
+  }
+
+  .kicker {
+    font-size: calc(2.3rem - 6px);
+  }
+
+  .title {
+    font-size: calc(5.1rem - 6px);
+    line-height: 0.9;
+  }
+
+  .subtitle {
+    font-size: calc(2.1rem - 6px);
+  }
+
+  .leftTile {
+    padding: 14px 12px;
+    gap: 8px;
+  }
+
+  .leftValue {
+    font-size: 1.35rem;
+    line-height: 0.94;
+    white-space: normal;
+  }
+
+  .leftLabel {
+    font-size: 1.68rem;
+    line-height: 0.92;
+  }
+
+  .centerPanel,
+  .rightTable {
+    min-height: 0;
+  }
+
+  .rightTable {
+    align-self: start;
+  }
+
+  .centerPanel {
+    padding: 22px 20px;
+    overflow: hidden;
+  }
+
+  .focusLabel {
+    font-size: 2.95rem;
+  }
+
+  .donut {
+    justify-self: center;
+    width: min(44.5vw, 332px);
+    margin-right: 0;
+    margin-top: -4px;
+    transform: translateX(-10px);
+  }
+
+  .donutInner {
+    font-size: 3.8rem;
+  }
+
+  .tableHead {
+    padding: 14px 10px;
+    font-size: 0.82rem;
+    letter-spacing: 0.04em;
+  }
+
+  .tableRow {
+    padding: 10px 10px;
+  }
+
+  .rowLabelWrap {
+    gap: 7px;
+  }
+
+  .rowLabel {
+    font-size: 1.24rem;
+    line-height: 1.02;
+  }
+
+  .rowValue {
+    font-size: 1.2rem;
+  }
+
+}
+
+@media (max-width: 640px) {
+  .header {
+    gap: 12px;
+    padding: 12px 16px 0;
+  }
+
+  .headerCluster {
+    gap: 14px;
+  }
+
+  .main {
+    padding: 16px 16px 126px;
+  }
+
+  .heroCopy {
+    gap: 4px;
+  }
+
+  .kicker {
+    font-size: 0.95rem;
+  }
+
+  .title {
+    font-size: 2.2rem;
+  }
+
+  .subtitle {
+    font-size: 0.8rem;
+  }
+
+  .leftStack {
+    grid-template-columns: 1fr;
+  }
+
+  .summaryStage {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-top: 22px;
+  }
+
+  .leftValue {
+    font-size: 0.95rem;
+  }
+
+  .leftLabel {
+    font-size: 0.82rem;
+  }
+
+  .tableHead {
+    font-size: 0.68rem;
+  }
+
+  .centerPanel,
+  .rightTable {
+    min-height: 0;
+  }
+
+  .centerPanel {
+    padding: 12px 12px 14px;
+  }
+
+  .rowLabel {
+    font-size: 0.82rem;
+  }
+
+  .rowValue {
+    font-size: 0.8rem;
+  }
+
+  .focusLabel {
+    font-size: 1.9rem;
+  }
+
+  .donut {
+    width: min(76vw, 300px);
+  }
+
+  .donutInner {
+    font-size: 2rem;
+  }
+
+  .mobileFooter {
+    display: flex;
+    position: fixed;
+    left: 16px;
+    right: 16px;
+    bottom: 200px;
+    z-index: 14;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 8px 0;
+    border-top: 1px solid rgba(25, 28, 32, 0.12);
+    pointer-events: none;
+  }
+
+  .mobileFooterDiamond {
+    width: 56px;
+    height: 56px;
+    font-size: 0.62rem;
+    background: #fcfcfc;
+    pointer-events: auto;
+  }
+
+}
