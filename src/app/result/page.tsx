@@ -38,6 +38,7 @@ export default function ResultPage() {
   const [localPreviewImage, setLocalPreviewImage] = useState<string | null>(null);
   const [previewStatus, setPreviewStatus] = useState<"idle" | "converting" | "error">("idle");
   const [analysisNotice, setAnalysisNotice] = useState<string | null>(null);
+  const [isCameraPromptOpen, setIsCameraPromptOpen] = useState(false);
   const previewImage = localPreviewImage ?? storedPreviewImage;
   const isSubmitting = previewStatus === "converting";
 
@@ -155,6 +156,35 @@ export default function ResultPage() {
           </div>
         )}
 
+        {isCameraPromptOpen && (
+          <div className={styles.permissionPromptOverlay} role="presentation">
+            <section className={styles.permissionPrompt} role="dialog" aria-modal="true" aria-label="Camera permission prompt">
+              <p className={styles.permissionPromptTitle}>ALLOW A.I. TO ACCESS YOUR CAMERA</p>
+              <div className={styles.permissionPromptActions}>
+                <button
+                  type="button"
+                  className={`${styles.permissionPromptButton} ${styles.permissionPromptButtonDeny}`}
+                  onClick={() => {
+                    setIsCameraPromptOpen(false);
+                  }}
+                >
+                  DENY
+                </button>
+                <button
+                  type="button"
+                  className={`${styles.permissionPromptButton} ${styles.permissionPromptButtonAllow}`}
+                  onClick={() => {
+                    setIsCameraPromptOpen(false);
+                    router.push("/camera/capture");
+                  }}
+                >
+                  ALLOW
+                </button>
+              </div>
+            </section>
+          </div>
+        )}
+
         <p className={styles.kicker}>TO START ANALYSIS</p>
         <div className={styles.previewFrame}>
           {!previewImage && previewStatus !== "converting" && previewStatus !== "error" && (
@@ -215,7 +245,7 @@ export default function ResultPage() {
                 className={`${styles.permissionCard} ${styles.permissionCardLeft}`}
                 disabled={isSubmitting}
                 onClick={() => {
-                  cameraInputRef.current?.click();
+                  setIsCameraPromptOpen(true);
                 }}
               >
                 <span className={styles.permissionIcon} aria-hidden="true">

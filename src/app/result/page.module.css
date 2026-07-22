@@ -100,6 +100,83 @@
   transform: translateX(-50%);
 }
 
+.permissionPromptOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 18;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(245, 244, 239, 0.06);
+}
+
+.permissionPrompt {
+  width: min(92vw, 382px);
+  border: 1px solid rgba(250, 250, 247, 0.12);
+  background: #1f2022;
+  color: #f3f4f2;
+}
+
+.permissionPromptTitle {
+  margin: 0;
+  padding: 18px 18px 48px;
+  font-size: 0.96rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.12;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.permissionPromptActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 46px;
+  padding: 8px 14px 10px;
+  border-top: 1px solid rgba(244, 244, 241, 0.14);
+}
+
+.permissionPromptButton {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.permissionPromptButtonDeny {
+  color: rgba(229, 229, 223, 0.68);
+}
+
+.permissionPromptButtonAllow {
+  color: #f8f8f5;
+}
+
+@media (min-width: 1024px) {
+  .permissionPrompt {
+    width: min(92vw, 566px);
+  }
+
+  .permissionPromptTitle {
+    padding: 20px 18px 56px;
+    font-size: 1.74rem;
+    line-height: 1.02;
+    white-space: normal;
+  }
+
+  .permissionPromptActions {
+    gap: 34px;
+    padding: 8px 16px 10px;
+  }
+
+  .permissionPromptButton {
+    font-size: 1.02rem;
+  }
+}
+
 .previewFrame {
   position: absolute;
   top: 18px;

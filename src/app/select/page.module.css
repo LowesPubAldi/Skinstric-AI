@@ -70,6 +70,61 @@
   padding: 18px 0 20px 26px;
 }
 
+.previewPanel {
+  position: absolute;
+  right: 32px;
+  top: 20px;
+  z-index: 2;
+  display: grid;
+  gap: 8px;
+  justify-items: start;
+}
+
+.previewTitle {
+  color: rgba(17, 17, 17, 0.74);
+  font-size: 0.92rem;
+  letter-spacing: -0.02em;
+}
+
+.previewFrame {
+  width: 140px;
+  height: 140px;
+  border: 1px solid rgba(17, 17, 17, 0.2);
+  background: rgba(255, 255, 255, 0.58);
+  overflow: hidden;
+}
+
+.previewImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.previewEmpty {
+  display: inline-flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  color: rgba(17, 17, 17, 0.5);
+  font-size: 0.76rem;
+  letter-spacing: -0.01em;
+}
+
+.previewChangeLink {
+  min-height: 28px;
+  padding: 0 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(17, 17, 17, 0.4);
+  background: rgba(255, 255, 255, 0.74);
+  color: #111111;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
 .copyBlock {
   display: grid;
   gap: 8px;
@@ -236,6 +291,27 @@
     padding: 14px 0 18px 18px;
   }
 
+  .previewPanel {
+    right: 20px;
+    top: 18px;
+    gap: 6px;
+  }
+
+  .previewTitle {
+    font-size: 0.82rem;
+  }
+
+  .previewFrame {
+    width: 112px;
+    height: 112px;
+  }
+
+  .previewChangeLink {
+    min-height: 24px;
+    padding: 0 9px;
+    font-size: 0.54rem;
+  }
+
   .copyBlock {
     gap: 6px;
     margin-top: 10px;
@@ -290,6 +366,27 @@
 
   .main {
     padding: 16px 0 18px 16px;
+  }
+
+  .previewPanel {
+    right: 16px;
+    top: 14px;
+    gap: 5px;
+  }
+
+  .previewTitle {
+    font-size: 0.76rem;
+  }
+
+  .previewFrame {
+    width: 96px;
+    height: 96px;
+  }
+
+  .previewChangeLink {
+    min-height: 22px;
+    padding: 0 8px;
+    font-size: 0.5rem;
   }
 
   .copyBlock {
@@ -362,5 +459,11 @@
 
   .summaryDiamond::before {
     content: "Sum";
+  }
+}
+
+@media (max-width: 640px) and (max-height: 720px) {
+  .previewPanel {
+    top: 6px;
   }
 }

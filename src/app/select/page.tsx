@@ -1,19 +1,19 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
-import { useEffect } from "react";
+import { useSyncExternalStore } from "react";
 import styles from "./page.module.css";
 
 const phaseTwoImageStorageKey = "skinstric-phase-two-image-base64";
-const phaseTwoImageSourceStorageKey = "skinstric-phase-two-image-source";
-const phaseTwoAnalysisStorageKey = "skinstric-phase-two-analysis";
+const noopSubscribe = () => () => {};
 
 export default function SelectPage() {
-  useEffect(() => {
-    window.localStorage.getItem(phaseTwoImageStorageKey);
-    window.localStorage.getItem(phaseTwoImageSourceStorageKey);
-    window.localStorage.getItem(phaseTwoAnalysisStorageKey);
-  }, []);
+  const previewImage = useSyncExternalStore(
+    noopSubscribe,
+    () => window.localStorage.getItem(phaseTwoImageStorageKey),
+    () => null,
+  );
 
   return (
     <div className={styles.page}>
@@ -31,6 +31,27 @@ export default function SelectPage() {
       </header>
 
       <main className={styles.main}>
+        <aside className={styles.previewPanel} aria-label="Uploaded photo preview">
+          <p className={styles.previewTitle}>Preview</p>
+          <div className={styles.previewFrame}>
+            {previewImage ? (
+              <Image
+                className={styles.previewImage}
+                src={previewImage}
+                alt="Uploaded selfie preview"
+                width={140}
+                height={140}
+                unoptimized
+              />
+            ) : (
+              <p className={styles.previewEmpty}>No photo</p>
+            )}
+          </div>
+          <Link className={styles.previewChangeLink} href="/result">
+            CHANGE
+          </Link>
+        </aside>
+
         <div className={styles.copyBlock}>
           <p className={styles.title}>A.I. ANALYSIS</p>
           <p className={styles.subtitle}>A.I. HAS ESTIMATED THE FOLLOWING.</p>
