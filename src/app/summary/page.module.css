@@ -517,12 +517,12 @@
     position: fixed;
     left: 16px;
     right: 16px;
-    bottom: 200px;
+    bottom: var(--mobile-footer-bottom, 200px);
     z-index: 14;
     align-items: center;
     justify-content: space-between;
     padding: 8px 8px 0;
-    border-top: 1px solid rgba(25, 28, 32, 0.12);
+    background: #fcfcfc;
     pointer-events: none;
   }
 

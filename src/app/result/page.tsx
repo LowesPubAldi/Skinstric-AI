@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useRef, useState } from "react";
+import { useRef, useState, useSyncExternalStore } from "react";
 import styles from "./page.module.css";
 
 const diamondLargeSrc = "/result-assets/ResDiamond-large.png";
@@ -24,25 +24,21 @@ type PhaseTwoApiResponse = {
   data?: Partial<Record<DemographicGroup, Record<string, number>>>;
 };
 
+const noopSubscribe = () => () => {};
+
 export default function ResultPage() {
   const router = useRouter();
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const galleryInputRef = useRef<HTMLInputElement>(null);
-  const [previewImage, setPreviewImage] = useState<string | null>(() => {
-    if (typeof window === "undefined") {
-      return null;
-    }
-
-    return window.localStorage.getItem(phaseTwoImageStorageKey);
-  });
-  const [previewStatus, setPreviewStatus] = useState<"idle" | "converting" | "ready" | "error">(() => {
-    if (typeof window === "undefined") {
-      return "idle";
-    }
-
-    return window.localStorage.getItem(phaseTwoImageStorageKey) ? "ready" : "idle";
-  });
+  const storedPreviewImage = useSyncExternalStore(
+    noopSubscribe,
+    () => window.localStorage.getItem(phaseTwoImageStorageKey),
+    () => null,
+  );
+  const [localPreviewImage, setLocalPreviewImage] = useState<string | null>(null);
+  const [previewStatus, setPreviewStatus] = useState<"idle" | "converting" | "error">("idle");
   const [analysisNotice, setAnalysisNotice] = useState<string | null>(null);
+  const previewImage = localPreviewImage ?? storedPreviewImage;
   const isSubmitting = previewStatus === "converting";
 
   function sortDemographicGroup(values: Record<string, number>) {
@@ -129,8 +125,8 @@ export default function ResultPage() {
       const base64Image = await convertFileToBase64(file);
       window.localStorage.setItem(phaseTwoImageStorageKey, base64Image);
       window.localStorage.setItem(phaseTwoImageSourceStorageKey, source);
-      setPreviewImage(base64Image);
-      setPreviewStatus("ready");
+      setLocalPreviewImage(base64Image);
+      setPreviewStatus("idle");
       void submitPhaseTwo(base64Image, source);
     } catch {
       setPreviewStatus("error");
@@ -189,9 +185,30 @@ export default function ResultPage() {
           <div className={styles.heroContent}>
             <div className={styles.permissionColumn}>
               <div className={styles.permissionBackdrop} aria-hidden="true">
-                <Image className={`${styles.diamond} ${styles.diamondLarge}`} src={diamondLargeSrc} alt="" width={700} height={700} />
-                <Image className={`${styles.diamond} ${styles.diamondMedium}`} src={diamondMediumSrc} alt="" width={700} height={700} />
-                <Image className={`${styles.diamond} ${styles.diamondSmall}`} src={diamondSmallSrc} alt="" width={700} height={700} />
+                <Image
+                  className={`${styles.diamond} ${styles.diamondLarge}`}
+                  src={diamondLargeSrc}
+                  alt=""
+                  width={700}
+                  height={700}
+                  priority
+                />
+                <Image
+                  className={`${styles.diamond} ${styles.diamondMedium}`}
+                  src={diamondMediumSrc}
+                  alt=""
+                  width={700}
+                  height={700}
+                  loading="eager"
+                />
+                <Image
+                  className={`${styles.diamond} ${styles.diamondSmall}`}
+                  src={diamondSmallSrc}
+                  alt=""
+                  width={700}
+                  height={700}
+                  loading="eager"
+                />
               </div>
               <button
                 type="button"
@@ -215,9 +232,30 @@ export default function ResultPage() {
 
             <div className={styles.permissionColumn}>
               <div className={styles.permissionBackdrop} aria-hidden="true">
-                <Image className={`${styles.diamond} ${styles.diamondLarge}`} src={diamondLargeSrc} alt="" width={700} height={700} />
-                <Image className={`${styles.diamond} ${styles.diamondMedium}`} src={diamondMediumSrc} alt="" width={700} height={700} />
-                <Image className={`${styles.diamond} ${styles.diamondSmall}`} src={diamondSmallSrc} alt="" width={700} height={700} />
+                <Image
+                  className={`${styles.diamond} ${styles.diamondLarge}`}
+                  src={diamondLargeSrc}
+                  alt=""
+                  width={700}
+                  height={700}
+                  priority
+                />
+                <Image
+                  className={`${styles.diamond} ${styles.diamondMedium}`}
+                  src={diamondMediumSrc}
+                  alt=""
+                  width={700}
+                  height={700}
+                  loading="eager"
+                />
+                <Image
+                  className={`${styles.diamond} ${styles.diamondSmall}`}
+                  src={diamondSmallSrc}
+                  alt=""
+                  width={700}
+                  height={700}
+                  loading="eager"
+                />
               </div>
               <button
                 type="button"

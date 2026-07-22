@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState, type CSSProperties } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import styles from "./page.module.css";
 
 type DemographicGroup = "race" | "age" | "gender";
@@ -53,15 +53,24 @@ function normalizeResults(raw: AnalysisStorageShape): DemographicResults {
   return { race, age, gender };
 }
 
+function easeInOutCubic(progress: number) {
+  return progress < 0.5 ? 4 * progress * progress * progress : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+}
+
 export default function SummaryPage() {
   const [results, setResults] = useState<DemographicResults | null>(null);
   const [loadStatus, setLoadStatus] = useState<"loading" | "ready" | "empty">("loading");
   const [activeGroup, setActiveGroup] = useState<DemographicGroup>("race");
+  const [animatedSelectionValue, setAnimatedSelectionValue] = useState(0);
+  const [mobileFooterBottom, setMobileFooterBottom] = useState(200);
   const [actualSelections, setActualSelections] = useState<Record<DemographicGroup, string>>({
     race: "Not set",
     age: "Not set",
     gender: "Not set",
   });
+  const animatedValueRef = useRef(0);
+  const animationFrameRef = useRef<number | null>(null);
+  const footerAnimationFrameRef = useRef<number | null>(null);
 
   useEffect(() => {
     const rawAnalysis = window.localStorage.getItem(phaseTwoAnalysisStorageKey);
@@ -105,8 +114,115 @@ export default function SummaryPage() {
   const activeSelectionLabel = actualSelections[activeGroup];
   const activeSelectionValue =
     activeScores.find((item) => item.label === activeSelectionLabel)?.value ?? activeScores[0]?.value ?? 0;
+
+  useEffect(() => {
+    if (loadStatus !== "ready") {
+      return;
+    }
+
+    const from = animatedValueRef.current;
+    const to = activeSelectionValue;
+
+    if (Math.abs(to - from) < 0.0001) {
+      return;
+    }
+
+    if (animationFrameRef.current !== null) {
+      cancelAnimationFrame(animationFrameRef.current);
+    }
+
+    const durationMs = 300;
+    const start = performance.now();
+
+    const animate = (now: number) => {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / durationMs, 1);
+      const eased = easeInOutCubic(progress);
+      const nextValue = from + (to - from) * eased;
+
+      animatedValueRef.current = nextValue;
+      setAnimatedSelectionValue(nextValue);
+
+      if (progress < 1) {
+        animationFrameRef.current = requestAnimationFrame(animate);
+        return;
+      }
+
+      animatedValueRef.current = to;
+      setAnimatedSelectionValue(to);
+      animationFrameRef.current = null;
+    };
+
+    animationFrameRef.current = requestAnimationFrame(animate);
+
+    return () => {
+      if (animationFrameRef.current !== null) {
+        cancelAnimationFrame(animationFrameRef.current);
+        animationFrameRef.current = null;
+      }
+    };
+  }, [activeSelectionValue, loadStatus]);
+
+  useEffect(() => {
+    if (loadStatus !== "ready") {
+      return;
+    }
+
+    animatedValueRef.current = activeSelectionValue;
+    setAnimatedSelectionValue(activeSelectionValue);
+  }, [loadStatus]);
+
+  useEffect(() => {
+    const topOffset = 200;
+    const bottomOffset = 32;
+
+    const updateFooterOffset = () => {
+      if (!window.matchMedia("(max-width: 640px)").matches) {
+        return;
+      }
+
+      const doc = document.documentElement;
+      const maxScroll = Math.max(doc.scrollHeight - window.innerHeight, 1);
+      const progress = Math.min(Math.max(window.scrollY / maxScroll, 0), 1);
+      const nextBottom = topOffset - (topOffset - bottomOffset) * progress;
+
+      setMobileFooterBottom((previous) => {
+        if (Math.abs(previous - nextBottom) < 0.5) {
+          return previous;
+        }
+
+        return nextBottom;
+      });
+    };
+
+    const onScrollOrResize = () => {
+      if (footerAnimationFrameRef.current !== null) {
+        cancelAnimationFrame(footerAnimationFrameRef.current);
+      }
+
+      footerAnimationFrameRef.current = requestAnimationFrame(() => {
+        updateFooterOffset();
+        footerAnimationFrameRef.current = null;
+      });
+    };
+
+    updateFooterOffset();
+    window.addEventListener("scroll", onScrollOrResize, { passive: true });
+    window.addEventListener("resize", onScrollOrResize);
+
+    return () => {
+      window.removeEventListener("scroll", onScrollOrResize);
+      window.removeEventListener("resize", onScrollOrResize);
+
+      if (footerAnimationFrameRef.current !== null) {
+        cancelAnimationFrame(footerAnimationFrameRef.current);
+        footerAnimationFrameRef.current = null;
+      }
+    };
+  }, []);
+
   const donutStyle = {
-    "--score-angle": `${activeSelectionValue * 360}deg`,
+    "--score-angle": `${animatedSelectionValue * 360}deg`,
   } as CSSProperties;
 
   return (
@@ -183,7 +299,7 @@ export default function SummaryPage() {
               <article className={styles.centerPanel}>
                 <p className={styles.focusLabel}>{activeSelectionLabel}</p>
                 <div className={styles.donut} style={donutStyle} aria-hidden="true">
-                  <div className={styles.donutInner}>{formatPercentWhole(activeSelectionValue)}</div>
+                  <div className={styles.donutInner}>{formatPercentWhole(animatedSelectionValue)}</div>
                 </div>
               </article>
 
@@ -217,7 +333,11 @@ export default function SummaryPage() {
               </article>
             </section>
 
-            <nav className={styles.mobileFooter} aria-label="Summary actions">
+            <nav
+              className={styles.mobileFooter}
+              aria-label="Summary actions"
+              style={{ "--mobile-footer-bottom": `${mobileFooterBottom}px` } as CSSProperties}
+            >
               <Link className={styles.mobileFooterDiamond} href="/select">
                 <span className={styles.mobileFooterLabel}>BACK</span>
               </Link>

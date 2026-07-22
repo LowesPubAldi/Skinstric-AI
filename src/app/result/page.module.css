@@ -338,15 +338,64 @@
 }
 
 .permissionCardLeft .permissionCopy {
-  right: calc(4% - 8px);
+  right: calc(4% - 16px);
   top: 20%;
   justify-items: start;
+  transform: translateX(17px);
 }
 
 .permissionCardRight .permissionCopy {
-  left: 12%;
+  left: calc(12% - 12px);
   bottom: 25%;
   justify-items: start;
+  transform: translateX(-28px);
+}
+
+.permissionCardLeft .permissionCopy::before,
+.permissionCardRight .permissionCopy::before {
+  content: "";
+  position: absolute;
+  height: 1px;
+  background: rgba(17, 17, 17, 0.62);
+  pointer-events: none;
+}
+
+.permissionCardLeft .permissionCopy::after,
+.permissionCardRight .permissionCopy::after {
+  content: "";
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border: 1px solid rgba(17, 17, 17, 0.62);
+  border-radius: 999px;
+  background: #fcf9f1;
+  pointer-events: none;
+}
+
+.permissionCardLeft .permissionCopy::before {
+  left: -92px;
+  top: 39px;
+  width: 102px;
+  transform: rotate(-42deg);
+  transform-origin: right center;
+}
+
+.permissionCardLeft .permissionCopy::after {
+  left: 4px;
+  top: 34px;
+}
+
+.permissionCardRight .permissionCopy::before {
+  right: -108px;
+  top: 36px;
+  width: 118px;
+  transform: rotate(-36deg);
+  transform-origin: left center;
+}
+
+.permissionCardRight .permissionCopy::after {
+  right: 1px;
+  top: 30px;
 }
 
 .permissionIcon {
@@ -370,27 +419,34 @@
   top: 50%;
   transform: translate(-50%, -50%) rotate(var(--diamond-rotation, 0deg));
   object-fit: contain;
+  filter:
+    brightness(0.9)
+    contrast(1.15)
+    drop-shadow(1px 0 0 rgba(17, 17, 17, 0.22))
+    drop-shadow(-1px 0 0 rgba(17, 17, 17, 0.22))
+    drop-shadow(0 1px 0 rgba(17, 17, 17, 0.22))
+    drop-shadow(0 -1px 0 rgba(17, 17, 17, 0.22));
   will-change: transform;
 }
 
 .diamondLarge {
   width: 96%;
   height: 96%;
-  opacity: 0.72;
+  opacity: 0.86;
   --diamond-rotation: 0deg;
 }
 
 .diamondMedium {
   width: 80%;
   height: 80%;
-  opacity: 0.88;
+  opacity: 0.94;
   --diamond-rotation: 120deg;
 }
 
 .diamondSmall {
   width: 64%;
   height: 64%;
-  opacity: 1;
+  opacity: 0.98;
   --diamond-rotation: 240deg;
 }
 
@@ -434,7 +490,7 @@
   display: grid;
   gap: 2px;
   width: max-content;
-  font-size: clamp(0.95rem, 0.98vw, 1.12rem);
+  font-size: clamp(1.08rem, 1.12vw, 1.3rem);
   font-weight: 700;
   line-height: 0.98;
   letter-spacing: -0.04em;
@@ -543,6 +599,50 @@
   .permissionCardRight .permissionCopy {
     width: auto;
   }
+
+  .permissionCardLeft .permissionCopy::before {
+    display: none;
+  }
+
+  .permissionCardLeft .permissionCopy::after {
+    left: -6px;
+    top: 22px;
+  }
+
+  .permissionCardLeft .permissionIcon::after {
+    content: "";
+    position: absolute;
+    left: 142px;
+    top: 32px;
+    width: 74px;
+    height: 1px;
+    background: rgba(17, 17, 17, 0.62);
+    transform: rotate(-47deg);
+    transform-origin: left center;
+    pointer-events: none;
+  }
+
+  .permissionCardRight .permissionCopy::before {
+    display: none;
+  }
+
+  .permissionCardRight .permissionCopy::after {
+    right: -6px;
+    top: -8px;
+  }
+
+  .permissionCardRight .permissionIcon::after {
+    content: "";
+    position: absolute;
+    left: 22px;
+    top: 90px;
+    width: 78px;
+    height: 1px;
+    background: rgba(17, 17, 17, 0.62);
+    transform: rotate(139deg);
+    transform-origin: left center;
+    pointer-events: none;
+  }
 }
 
 @media (max-width: 640px) {
@@ -576,8 +676,11 @@
   .hero {
     position: relative;
     inset: auto;
-    width: min(100%, 380px);
+    width: calc(100vw - 40px);
+    max-width: 335px;
     margin: 18px auto 0;
+    display: grid;
+    justify-items: center;
     transform: none;
   }
 
@@ -590,14 +693,24 @@
   }
 
   .heroContent {
+    position: relative;
+    inset: auto;
+    transform: none;
     display: grid;
     grid-template-columns: 1fr;
-    width: min(100%, 340px);
+    width: min(100%, 300px);
+    justify-items: center;
     gap: 8px;
   }
 
   .permissionColumn {
+    width: 100%;
+    justify-items: center;
     min-height: 250px;
+  }
+
+  .permissionColumn:first-child {
+    transform: none;
   }
 
   .permissionBackdrop {
@@ -610,7 +723,15 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    width: min(100%, 260px);
+    margin: 0 auto;
     gap: 10px;
+  }
+
+  .permissionCardLeft,
+  .permissionCardRight {
+    position: relative;
+    inset: auto;
   }
 
   .previewFrame {
@@ -625,6 +746,14 @@
     transform: none;
     width: 72px;
     height: 72px;
+  }
+
+  .permissionCardLeft .permissionIcon,
+  .permissionCardRight .permissionIcon {
+    position: relative;
+    left: auto;
+    top: auto;
+    transform: translateY(8px);
   }
 
   .permissionText {
@@ -652,12 +781,160 @@
     display: none;
   }
 
+  .permissionCardRight .permissionIcon::after {
+    display: none;
+  }
+
+  .permissionCardLeft .permissionIcon::after {
+    display: none;
+  }
+
   .demographicGrid {
     grid-template-columns: 1fr;
   }
 
   .backLink {
     left: 20px;
+    bottom: 208px;
+    width: 42px;
+    height: 42px;
+    gap: 0;
+  }
+
+  .backDiamond {
+    position: absolute;
+    inset: 0;
+    width: 42px;
+    height: 42px;
+  }
+
+  .backDiamond::before {
+    content: none;
+  }
+
+  .backLabel {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0;
+    text-transform: uppercase;
+  }
+}
+
+@media (max-width: 900px) and (min-width: 641px) {
+  .permissionCardLeft .permissionIcon::after {
+    left: 138px;
+    top: 26px;
+    width: 124px;
+    transform: rotate(-58deg);
+  }
+
+  .permissionCardRight .permissionIcon::after {
+    left: 24px;
+    top: 90px;
+    width: 94px;
+    transform: rotate(132deg);
+  }
+
+  .permissionCardLeft .permissionCopy {
+    right: auto;
+    left: 83%;
+    top: 8%;
+    transform: none;
+  }
+
+  .permissionCardLeft .permissionCopy::after {
+    left: -6px;
+    top: 34px;
+  }
+
+  .permissionCardRight .permissionCopy {
+    left: -2%;
+    top: 79%;
+    bottom: auto;
+    transform: none;
+  }
+
+  .permissionCardRight .permissionCopy::after {
+    right: -6px;
+    top: -6px;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 768px) {
+  .backLink {
+    left: 56px;
     bottom: 20px;
+  }
+
+  .permissionBackdrop {
+    width: 420px;
+  }
+
+  .diamondLarge {
+    width: 100%;
+    height: 100%;
+    opacity: 0.86;
+    --diamond-rotation: -12deg;
+  }
+
+  .diamondMedium {
+    width: 84%;
+    height: 84%;
+    opacity: 0.92;
+    --diamond-rotation: -1deg;
+  }
+
+  .diamondSmall {
+    width: 68%;
+    height: 68%;
+    opacity: 0.96;
+    --diamond-rotation: 8deg;
+  }
+
+  .permissionCardLeft .permissionIcon::after {
+    left: 120px;
+    top: 34px;
+    width: 96px;
+    transform: rotate(-60deg);
+  }
+
+  .permissionCardRight .permissionIcon::after {
+    left: 22px;
+    top: 92px;
+    width: 96px;
+    transform: rotate(134deg);
+  }
+
+  .permissionCardLeft .permissionCopy {
+    left: 92%;
+    top: 12%;
+  }
+
+  .permissionCardLeft .permissionCopy::after {
+    left: -8px;
+    top: 34px;
+    width: 6px;
+    height: 6px;
+    border-color: rgba(17, 17, 17, 0.72);
+  }
+
+  .permissionCardLeft .permissionText {
+    padding-left: 4px;
+  }
+
+  .permissionCardRight .permissionCopy {
+    left: -16%;
+    top: 74%;
+  }
+
+  .permissionCardRight .permissionCopy::after {
+    right: 90px;
+    top: -18px;
   }
 }
