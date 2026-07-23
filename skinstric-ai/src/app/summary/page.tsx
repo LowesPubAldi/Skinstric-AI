@@ -65,11 +65,11 @@ function easeInOutCubic(progress: number) {
 export default function SummaryPage() {
   const [activeGroup, setActiveGroup] = useState<DemographicGroup>("race");
   const [animatedSelectionValue, setAnimatedSelectionValue] = useState(0);
-  const [mobileFooterBottom, setMobileFooterBottom] = useState(200);
   const [selectionOverrides, setSelectionOverrides] = useState<Partial<Record<DemographicGroup, string>>>({});
+  const [isFooterDockedAfterHero, setIsFooterDockedAfterHero] = useState(false);
   const animatedValueRef = useRef(0);
   const animationFrameRef = useRef<number | null>(null);
-  const footerAnimationFrameRef = useRef<number | null>(null);
+  const footerDockSentinelRef = useRef<HTMLDivElement | null>(null);
 
   const analysisSnapshot = useSyncExternalStore(
     noopSubscribe,
@@ -184,40 +184,55 @@ export default function SummaryPage() {
   }, [activeSelectionValue, loadStatus]);
 
   useEffect(() => {
-    const topOffset = 200;
-    const bottomOffset = 32;
+    if (!window.matchMedia("(max-width: 640px)").matches) {
+      setIsFooterDockedAfterHero(false);
+      return;
+    }
 
-    const updateFooterOffset = () => {
-      if (!window.matchMedia("(max-width: 640px)").matches) {
-        return;
-      }
+    const sentinel = footerDockSentinelRef.current;
+    let frame: number | null = null;
+    let sentinelVisible = false;
 
+    const computeScrollDocked = () => {
       const doc = document.documentElement;
       const maxScroll = Math.max(doc.scrollHeight - window.innerHeight, 1);
       const progress = Math.min(Math.max(window.scrollY / maxScroll, 0), 1);
-      const nextBottom = topOffset - (topOffset - bottomOffset) * progress;
+      return progress >= 0.72;
+    };
 
-      setMobileFooterBottom((previous) => {
-        if (Math.abs(previous - nextBottom) < 0.5) {
-          return previous;
-        }
-
-        return nextBottom;
-      });
+    const syncDockedState = () => {
+      const scrollDocked = computeScrollDocked();
+      setIsFooterDockedAfterHero(sentinelVisible || scrollDocked);
     };
 
     const onScrollOrResize = () => {
-      if (footerAnimationFrameRef.current !== null) {
-        cancelAnimationFrame(footerAnimationFrameRef.current);
+      if (frame !== null) {
+        cancelAnimationFrame(frame);
       }
 
-      footerAnimationFrameRef.current = requestAnimationFrame(() => {
-        updateFooterOffset();
-        footerAnimationFrameRef.current = null;
+      frame = requestAnimationFrame(() => {
+        syncDockedState();
+        frame = null;
       });
     };
 
-    updateFooterOffset();
+    let observer: IntersectionObserver | null = null;
+    if (sentinel) {
+      observer = new IntersectionObserver(
+        (entries) => {
+          sentinelVisible = entries[0]?.isIntersecting ?? false;
+          syncDockedState();
+        },
+        {
+          root: null,
+          threshold: 0,
+        },
+      );
+
+      observer.observe(sentinel);
+    }
+
+    syncDockedState();
     window.addEventListener("scroll", onScrollOrResize, { passive: true });
     window.addEventListener("resize", onScrollOrResize);
 
@@ -225,9 +240,12 @@ export default function SummaryPage() {
       window.removeEventListener("scroll", onScrollOrResize);
       window.removeEventListener("resize", onScrollOrResize);
 
-      if (footerAnimationFrameRef.current !== null) {
-        cancelAnimationFrame(footerAnimationFrameRef.current);
-        footerAnimationFrameRef.current = null;
+      if (frame !== null) {
+        cancelAnimationFrame(frame);
+      }
+
+      if (observer) {
+        observer.disconnect();
       }
     };
   }, []);
@@ -344,18 +362,23 @@ export default function SummaryPage() {
               </article>
             </section>
 
-            <nav
-              className={styles.mobileFooter}
-              aria-label="Summary actions"
-              style={{ "--mobile-footer-bottom": `${mobileFooterBottom}px` } as CSSProperties}
+            <div ref={footerDockSentinelRef} className={styles.footerDockSentinel} aria-hidden="true" />
+
+            <footer
+              className={`${styles.summaryFooter} ${isFooterDockedAfterHero ? styles.summaryFooterDocked : ""}`}
             >
-              <Link className={styles.mobileFooterDiamond} href="/select">
-                <span className={styles.mobileFooterLabel}>BACK</span>
-              </Link>
-              <Link className={styles.mobileFooterDiamond} href="/">
-                <span className={styles.mobileFooterLabel}>HOME</span>
-              </Link>
-            </nav>
+              <nav className={styles.summaryFooterNav} aria-label="Summary actions">
+                <Link className={styles.summaryFooterAction} href="/select">
+                  <span className={styles.summaryFooterActionLabel}>Back</span>
+                </Link>
+                <Link className={styles.summaryFooterAction} href="/testing">
+                  <span className={styles.summaryFooterActionLabel}>Save</span>
+                </Link>
+                <Link className={styles.summaryFooterAction} href="/camera/capture">
+                  <span className={styles.summaryFooterActionLabel}>Selfie</span>
+                </Link>
+              </nav>
+            </footer>
           </>
         )}
 

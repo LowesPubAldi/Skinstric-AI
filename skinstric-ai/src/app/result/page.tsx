@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useRef, useState, useSyncExternalStore } from "react";
+import { useState, useSyncExternalStore } from "react";
 import styles from "./page.module.css";
 
 const diamondLargeSrc = "/result-assets/ResDiamond-large.png";
@@ -28,8 +28,6 @@ const noopSubscribe = () => () => {};
 
 export default function ResultPage() {
   const router = useRouter();
-  const cameraInputRef = useRef<HTMLInputElement>(null);
-  const galleryInputRef = useRef<HTMLInputElement>(null);
   const storedPreviewImage = useSyncExternalStore(
     noopSubscribe,
     () => window.localStorage.getItem(phaseTwoImageStorageKey),
@@ -38,9 +36,20 @@ export default function ResultPage() {
   const [localPreviewImage, setLocalPreviewImage] = useState<string | null>(null);
   const [previewStatus, setPreviewStatus] = useState<"idle" | "converting" | "error">("idle");
   const [analysisNotice, setAnalysisNotice] = useState<string | null>(null);
-  const [isCameraPromptOpen, setIsCameraPromptOpen] = useState(false);
   const previewImage = localPreviewImage ?? storedPreviewImage;
+  const cameraCardIconSrc = cameraIconSrc;
+  const galleryCardIconSrc = galleryIconSrc;
   const isSubmitting = previewStatus === "converting";
+
+  function goToSelectPage() {
+    router.push("/select");
+
+    window.setTimeout(() => {
+      if (window.location.pathname === "/result") {
+        window.location.assign("/select");
+      }
+    }, 250);
+  }
 
   function sortDemographicGroup(values: Record<string, number>) {
     return Object.entries(values)
@@ -102,11 +111,7 @@ export default function ResultPage() {
       );
 
       window.localStorage.setItem("skinstric-phase-two-analysis-ready", "true");
-      setAnalysisNotice("skinstric-514uqepz7-shalimar-cards-projects.vercel.app says Image anaylzed succesfully!");
-      await new Promise((resolve) => {
-        window.setTimeout(resolve, 1100);
-      });
-      router.push("/select");
+      setAnalysisNotice("Image analyzed successfully.");
     } catch {
       window.localStorage.removeItem(phaseTwoAnalysisStorageKey);
       setAnalysisNotice(null);
@@ -129,6 +134,7 @@ export default function ResultPage() {
       setLocalPreviewImage(base64Image);
       setPreviewStatus("idle");
       void submitPhaseTwo(base64Image, source);
+      goToSelectPage();
     } catch {
       setPreviewStatus("error");
     }
@@ -153,35 +159,6 @@ export default function ResultPage() {
         {analysisNotice && (
           <div className={styles.analysisNotice} role="status" aria-live="polite">
             {analysisNotice}
-          </div>
-        )}
-
-        {isCameraPromptOpen && (
-          <div className={styles.permissionPromptOverlay} role="presentation">
-            <section className={styles.permissionPrompt} role="dialog" aria-modal="true" aria-label="Camera permission prompt">
-              <p className={styles.permissionPromptTitle}>ALLOW A.I. TO ACCESS YOUR CAMERA</p>
-              <div className={styles.permissionPromptActions}>
-                <button
-                  type="button"
-                  className={`${styles.permissionPromptButton} ${styles.permissionPromptButtonDeny}`}
-                  onClick={() => {
-                    setIsCameraPromptOpen(false);
-                  }}
-                >
-                  DENY
-                </button>
-                <button
-                  type="button"
-                  className={`${styles.permissionPromptButton} ${styles.permissionPromptButtonAllow}`}
-                  onClick={() => {
-                    setIsCameraPromptOpen(false);
-                    router.push("/camera/capture");
-                  }}
-                >
-                  ALLOW
-                </button>
-              </div>
-            </section>
           </div>
         )}
 
@@ -240,16 +217,18 @@ export default function ResultPage() {
                   loading="eager"
                 />
               </div>
-              <button
-                type="button"
+              <Link
+                href="/camera/capture"
                 className={`${styles.permissionCard} ${styles.permissionCardLeft}`}
-                disabled={isSubmitting}
-                onClick={() => {
-                  setIsCameraPromptOpen(true);
+                aria-disabled={isSubmitting}
+                onClick={(event) => {
+                  if (isSubmitting) {
+                    event.preventDefault();
+                  }
                 }}
               >
                 <span className={styles.permissionIcon} aria-hidden="true">
-                  <Image className={styles.permissionArt} src={cameraIconSrc} alt="" width={146} height={146} />
+                  <Image className={styles.permissionArt} src={cameraCardIconSrc} alt="" width={146} height={146} unoptimized />
                 </span>
                 <div className={styles.permissionCopy}>
                   <p className={styles.permissionText}>
@@ -257,7 +236,7 @@ export default function ResultPage() {
                     <span>TO SCAN YOUR FACE</span>
                   </p>
                 </div>
-              </button>
+              </Link>
             </div>
 
             <div className={styles.permissionColumn}>
@@ -287,16 +266,18 @@ export default function ResultPage() {
                   loading="eager"
                 />
               </div>
-              <button
-                type="button"
+              <label
+                htmlFor="result-gallery-input"
                 className={`${styles.permissionCard} ${styles.permissionCardRight}`}
-                disabled={isSubmitting}
-                onClick={() => {
-                  galleryInputRef.current?.click();
+                aria-disabled={isSubmitting}
+                onClick={(event) => {
+                  if (isSubmitting) {
+                    event.preventDefault();
+                  }
                 }}
               >
                 <span className={styles.permissionIcon} aria-hidden="true">
-                  <Image className={styles.permissionArt} src={galleryIconSrc} alt="" width={146} height={146} />
+                  <Image className={styles.permissionArt} src={galleryCardIconSrc} alt="" width={146} height={146} unoptimized />
                 </span>
                 <div className={styles.permissionCopy}>
                   <p className={styles.permissionText}>
@@ -304,23 +285,12 @@ export default function ResultPage() {
                     <span>ACCESS GALLERY</span>
                   </p>
                 </div>
-              </button>
+              </label>
             </div>
           </div>
 
           <input
-            ref={cameraInputRef}
-            className={styles.hiddenFileInput}
-            type="file"
-            accept="image/*"
-            capture="user"
-            onChange={(event) => {
-              void handleFileSelection(event.target.files, "camera");
-              event.currentTarget.value = "";
-            }}
-          />
-          <input
-            ref={galleryInputRef}
+            id="result-gallery-input"
             className={styles.hiddenFileInput}
             type="file"
             accept="image/*"
@@ -335,6 +305,13 @@ export default function ResultPage() {
           <span className={styles.backDiamond} aria-hidden="true" />
           <span className={styles.backLabel}>Back</span>
         </Link>
+
+        {previewImage && (
+          <Link className={styles.continueLink} href="/select">
+            <span className={styles.continueLabel}>Continue</span>
+            <span className={styles.continueDiamond} aria-hidden="true" />
+          </Link>
+        )}
       </main>
     </div>
   );

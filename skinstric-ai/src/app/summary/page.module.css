@@ -95,6 +95,32 @@
   letter-spacing: -0.04em;
 }
 
+@media (min-width: 1024px) and (max-width: 1024px) {
+  .main {
+    box-sizing: border-box;
+    padding-bottom: 32px;
+  }
+
+  .kicker {
+    font-size: calc(1.55rem * 0.76);
+  }
+
+  .title {
+    font-size: calc(clamp(2.25rem, 4.5vw, 4rem) * 0.76);
+  }
+
+  .subtitle {
+    font-size: calc(1.35rem * 0.76);
+  }
+
+  .summaryStage {
+    transform: scale(0.85);
+    transform-origin: top left;
+    width: calc(100% / 0.85);
+    margin-top: 20px;
+  }
+}
+
 .infoMessage,
 .emptyState {
   margin-top: 18px;
@@ -284,38 +310,116 @@
   line-height: 1;
 }
 
-.mobileFooter {
-  display: none;
+.footerDockSentinel {
+  width: 100%;
+  height: 1px;
+  margin-top: 8px;
 }
 
-.mobileFooterDiamond {
+.summaryFooter {
+  margin-top: 20px;
+  padding-bottom: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.saveActions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  margin-bottom: 0;
+}
+
+.saveActionButton {
+  min-height: 32px;
+  padding: 0 12px;
+  border: 1px solid rgba(25, 28, 32, 0.38);
+  background: #ffffff;
+  color: #1b1f24;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.saveActionLabel {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 58px;
-  height: 58px;
-  border: 1px solid rgba(25, 28, 32, 0.58);
-  color: #1b1f24;
-  font-size: 0.64rem;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  transform: rotate(45deg);
 }
 
-.mobileFooterDiamond:focus-visible {
+.saveActionButton:hover {
+  background: #1e2125;
+  color: #f7f8fa;
+}
+
+.saveActionButton:focus-visible {
   outline: 2px solid rgba(25, 28, 32, 0.35);
   outline-offset: 2px;
 }
 
-.mobileFooterDiamond:hover {
-  background: rgba(25, 28, 32, 0.06);
+.saveNotice {
+  flex: 0 0 100%;
+  order: 2;
+  margin-bottom: 8px;
+  text-align: center;
+  color: rgba(25, 28, 32, 0.72);
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
-.mobileFooterLabel {
+@keyframes summaryFooterDropIn {
+  from {
+    bottom: calc(204px + env(safe-area-inset-bottom));
+  }
+
+  to {
+    bottom: calc(140px + env(safe-area-inset-bottom));
+  }
+}
+
+.summaryFooterNav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  width: 100%;
+}
+
+.summaryFooterAction {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transform: rotate(-45deg);
+  min-height: 36px;
+  padding: 0 14px;
+  border: 1px solid rgba(25, 28, 32, 0.38);
+  background: #f5f6f8;
+  color: #1b1f24;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.summaryFooterActionLabel {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.summaryFooterAction:hover {
+  background: #1e2125;
+  color: #f7f8fa;
+}
+
+.summaryFooterAction:focus-visible {
+  outline: 2px solid rgba(25, 28, 32, 0.35);
+  outline-offset: 2px;
 }
 
 @media (max-width: 1180px) {
@@ -348,16 +452,16 @@
   }
 
   .kicker {
-    font-size: calc(2.3rem - 6px);
+    font-size: calc((2.3rem - 6px) * 0.67);
   }
 
   .title {
-    font-size: calc(5.1rem - 6px);
+    font-size: calc((5.1rem - 6px) * 0.67);
     line-height: 0.9;
   }
 
   .subtitle {
-    font-size: calc(2.1rem - 6px);
+    font-size: calc((2.1rem - 6px) * 0.67);
   }
 
   .leftTile {
@@ -429,6 +533,15 @@
     font-size: 1.2rem;
   }
 
+  .summaryFooter {
+    margin-top: 16px;
+  }
+
+  .saveActionButton {
+    min-height: 30px;
+    font-size: 0.58rem;
+  }
+
 }
 
 @media (max-width: 640px) {
@@ -442,7 +555,7 @@
   }
 
   .main {
-    padding: 16px 16px 126px;
+    padding: 16px 16px 24px;
   }
 
   .heroCopy {
@@ -512,26 +625,95 @@
     font-size: 2rem;
   }
 
-  .mobileFooter {
-    display: flex;
+  .summaryFooter {
     position: fixed;
     left: 16px;
     right: 16px;
-    bottom: var(--mobile-footer-bottom, 200px);
+    bottom: calc(140px + env(safe-area-inset-bottom));
     z-index: 14;
+    margin-top: 0;
+    padding-bottom: 0;
+    background: #ffffff;
+    padding: 8px 10px;
+    border: 1px solid rgba(17, 17, 17, 0.14);
+    display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    padding: 8px 8px 0;
-    background: #fcfcfc;
-    pointer-events: none;
+    gap: 10px;
+    animation: summaryFooterDropIn 650ms ease-out 120ms both;
   }
 
-  .mobileFooterDiamond {
-    width: 56px;
-    height: 56px;
-    font-size: 0.62rem;
+  .summaryFooterDocked {
+    position: static;
+    left: auto;
+    right: auto;
+    bottom: auto;
+    z-index: auto;
+    margin-top: 12px;
+    animation: none;
+  }
+
+  .summaryFooterNav {
+    margin-top: 0;
+  }
+
+  .saveActions {
+    display: contents;
+    margin-bottom: 0;
+  }
+
+  .summaryFooterNav {
+    display: contents;
+  }
+
+  .saveActionButton {
+    width: 46px;
+    min-width: 46px;
+    min-height: 46px;
+    padding: 0;
+    border-color: rgba(17, 17, 17, 0.45);
     background: #fcfcfc;
+    color: #111111;
     pointer-events: auto;
+    transform: rotate(45deg);
+  }
+
+  .saveActionLabel {
+    font-size: 0.48rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transform: rotate(-45deg);
+  }
+
+  .saveNotice {
+    position: static;
+    order: -1;
+    flex: 0 0 100%;
+    margin: 0 0 4px;
+    font-size: 0.52rem;
+    background: #ffffff;
+  }
+
+  .summaryFooterAction {
+    width: 46px;
+    min-width: 46px;
+    min-height: 46px;
+    padding: 0;
+    border-color: rgba(17, 17, 17, 0.45);
+    background: #fcfcfc;
+    color: #111111;
+    pointer-events: auto;
+    transform: rotate(45deg);
+  }
+
+  .summaryFooterActionLabel {
+    font-size: 0.48rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transform: rotate(-45deg);
   }
 
 }
