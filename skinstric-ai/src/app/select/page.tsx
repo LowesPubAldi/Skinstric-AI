@@ -2,13 +2,17 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useSyncExternalStore } from "react";
+import bracketLeft from "../../../public/bracket-left.png";
+import bracketRight from "../../../public/bracket-right.png";
 import styles from "./page.module.css";
 
 const phaseTwoImageStorageKey = "skinstric-phase-two-image-base64";
 const noopSubscribe = () => () => {};
 
 export default function SelectPage() {
+  const router = useRouter();
   const previewImage = useSyncExternalStore(
     noopSubscribe,
     () => window.localStorage.getItem(phaseTwoImageStorageKey),
@@ -22,19 +26,21 @@ export default function SelectPage() {
           <Link className={styles.brand} href="/">
             SKINSTRIC
           </Link>
+          <Image src={bracketLeft} alt="left-bracket" width={8} height={16} />
           <p className={styles.sectionTag}>INTRO</p>
+          <Image src={bracketRight} alt="right-bracket" width={8} height={16} />
         </div>
 
-        <a className={styles.codeButton} href="#">
+        <button className={styles.codeButton} type="button">
           ENTER CODE
-        </a>
+        </button>
       </header>
 
       <main className={styles.main}>
-        <aside className={styles.previewPanel} aria-label="Uploaded photo preview">
-          <p className={styles.previewTitle}>Preview</p>
-          <div className={styles.previewFrame}>
-            {previewImage ? (
+        {previewImage && (
+          <aside className={styles.previewPanel} aria-label="Uploaded photo preview">
+            <p className={styles.previewTitle}>Preview</p>
+            <div className={styles.previewFrame}>
               <Image
                 className={styles.previewImage}
                 src={previewImage}
@@ -43,34 +49,36 @@ export default function SelectPage() {
                 height={140}
                 unoptimized
               />
-            ) : (
-              <p className={styles.previewEmpty}>No photo</p>
-            )}
-          </div>
-          <Link className={styles.previewChangeLink} href="/result">
-            CHANGE
-          </Link>
-        </aside>
+            </div>
+            <Link className={styles.previewChangeLink} href="/result">
+              CHANGE
+            </Link>
+          </aside>
+        )}
 
         <div className={styles.copyBlock}>
-          <p className={styles.title}>A.I. ANALYSIS</p>
-          <p className={styles.subtitle}>A.I. HAS ESTIMATED THE FOLLOWING.</p>
-          <p className={styles.subtitle}>FIX ESTIMATED INFORMATION IF NEEDED.</p>
+          <h2 className={styles.title}>A.I. ANALYSIS</h2>
+          <p className={styles.subtitle}>A.I. has estimated the following.</p>
+          <p className={styles.subtitle}>Fix estimated information if needed.</p>
         </div>
 
         <section className={styles.diamondStage} aria-label="A.I. analysis stage">
-          <Link className={`${styles.diamondTile} ${styles.diamondTop} ${styles.diamondLink}`} href="/summary">
+          <button
+            type="button"
+            className={`${styles.diamondTile} ${styles.diamondTop} ${styles.diamondLink}`}
+            onClick={() => router.push("/summary")}
+          >
             <span className={styles.diamondLabel}>DEMOGRAPHICS</span>
-          </Link>
-          <div className={`${styles.diamondTile} ${styles.diamondLeft} ${styles.diamondDisabled}`}>
+          </button>
+          <button type="button" disabled className={`${styles.diamondTile} ${styles.diamondLeft} ${styles.diamondDisabled}`}>
             <span className={styles.diamondLabel}>SKIN TYPE DETAILS</span>
-          </div>
-          <div className={`${styles.diamondTile} ${styles.diamondRight} ${styles.diamondDisabled}`}>
+          </button>
+          <button type="button" disabled className={`${styles.diamondTile} ${styles.diamondRight} ${styles.diamondDisabled}`}>
             <span className={styles.diamondLabel}>COSMETIC CONCERNS</span>
-          </div>
-          <div className={`${styles.diamondTile} ${styles.diamondBottom} ${styles.diamondDisabled}`}>
+          </button>
+          <button type="button" disabled className={`${styles.diamondTile} ${styles.diamondBottom} ${styles.diamondDisabled}`}>
             <span className={styles.diamondLabel}>WEATHER</span>
-          </div>
+          </button>
         </section>
 
         <Link className={styles.backLink} href="/result">

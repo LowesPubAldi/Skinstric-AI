@@ -3,6 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import bracketLeft from "../../../public/bracket-left.png";
+import bracketRight from "../../../public/bracket-right.png";
 import { useState, useSyncExternalStore } from "react";
 import { completeDemographicGroup, type DemographicGroup } from "../../lib/phase-two-demographics";
 import styles from "./page.module.css";
@@ -140,12 +142,14 @@ export default function ResultPage() {
           <Link className={styles.brand} href="/">
             SKINSTRIC
           </Link>
+          <Image src={bracketLeft} alt="left-bracket" width={8} height={16} />
           <p className={styles.sectionTag}>INTRO</p>
+          <Image src={bracketRight} alt="right-bracket" width={8} height={16} />
         </div>
 
-        <a className={styles.codeButton} href="#">
+        <button className={styles.codeButton} type="button">
           ENTER CODE
-        </a>
+        </button>
       </header>
 
       <main className={styles.main}>
@@ -158,7 +162,7 @@ export default function ResultPage() {
         <p className={styles.kicker}>TO START ANALYSIS</p>
         <div className={styles.previewFrame}>
           {!previewImage && previewStatus !== "converting" && previewStatus !== "error" && (
-            <p className={styles.previewLabel}>Preview</p>
+            <h1 className={styles.previewLabel}>Preview</h1>
           )}
           {previewStatus === "converting" && <div className={styles.previewSkeleton} aria-hidden="true" />}
           {previewStatus === "error" && <p className={styles.previewLabel}>Upload failed</p>}
@@ -217,6 +221,7 @@ export default function ResultPage() {
                 onClick={(event) => {
                   if (isSubmitting) {
                     event.preventDefault();
+                    return;
                   }
                 }}
               >
@@ -296,15 +301,13 @@ export default function ResultPage() {
 
         <Link className={styles.backLink} href="/testing">
           <span className={styles.backDiamond} aria-hidden="true" />
-          <span className={styles.backLabel}>Back</span>
+          <span className={styles.backLabel}>BACK</span>
         </Link>
 
-        {previewImage && (
-          <Link className={styles.continueLink} href="/select">
-            <span className={styles.continueLabel}>Continue</span>
-            <span className={styles.continueDiamond} aria-hidden="true" />
-          </Link>
-        )}
+        <Link className={styles.continueLink} href="/select">
+          <span className={styles.continueLabel}>PROCEED</span>
+          <span className={styles.continueDiamond} aria-hidden="true" />
+        </Link>
       </main>
     </div>
   );
