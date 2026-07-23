@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { completeDemographicGroup, type DemographicGroup } from "@/lib/phase-two-demographics";
+import { completeDemographicGroup, type DemographicGroup } from "../../../lib/phase-two-demographics";
 import styles from "./page.module.css";
 
 const phaseTwoImageStorageKey = "skinstric-phase-two-image-base64";

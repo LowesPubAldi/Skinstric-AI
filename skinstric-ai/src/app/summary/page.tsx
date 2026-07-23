@@ -6,7 +6,7 @@ import {
   completeDemographicGroup,
   type DemographicGroup,
   type DemographicItem,
-} from "@/lib/phase-two-demographics";
+} from "../../lib/phase-two-demographics";
 import styles from "./page.module.css";
 
 type DemographicResults = Record<DemographicGroup, DemographicItem[]>;
