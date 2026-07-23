@@ -200,6 +200,9 @@ export default function TakeTestPage() {
                 maxLength={28}
               />
             )}
+            {!showProcessing && !showSuccess && !hasTypedValue && (
+              <span className={styles.titleCaret}>|</span>
+            )}
             {showProcessing && (
               <div className={styles.processingState} aria-live="polite">
                 <div className={styles.processingTitle}>Processing Submission</div>

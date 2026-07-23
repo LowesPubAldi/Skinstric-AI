@@ -243,6 +243,29 @@
   pointer-events: none;
 }
 
+.titleCaret {
+  display: inline-block;
+  color: #111111;
+  font-family: var(--font-display);
+  font-size: clamp(2.45rem, 3.75vw, 3.55rem);
+  font-weight: 400;
+  line-height: 0.98;
+  letter-spacing: -0.08em;
+  animation: blinkCaret 1.05s steps(2, start) infinite;
+}
+
+@keyframes blinkCaret {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
 .titleUnderline {
   width: min(100%, 404px);
   border-bottom: 2px solid rgba(17, 17, 17, 0.38);

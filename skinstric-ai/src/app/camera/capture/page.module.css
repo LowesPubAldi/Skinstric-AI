@@ -99,7 +99,7 @@
 
 .captureStage {
   width: min(100%, 940px);
-  margin: 36px auto 0;
+  margin: 62px auto 0;
   display: grid;
   justify-items: center;
   gap: 18px;
@@ -107,7 +107,7 @@
 
 .captureFrame {
   position: relative;
-  width: min(100%, 760px);
+  width: min(100%, 860px);
   aspect-ratio: 16 / 10;
   border: 1px solid rgba(17, 17, 17, 0.24);
   background: #ece9e2;
@@ -132,8 +132,8 @@
   --focus-ry: 29%;
   --focus-cy: 50%;
   pointer-events: none;
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(6.5px);
+  backdrop-filter: blur(6.5px);
   -webkit-mask-image: radial-gradient(
     ellipse var(--focus-rx) var(--focus-ry) at 50% var(--focus-cy),
     transparent 0 72%,
@@ -163,11 +163,11 @@
 .captureOverlayMessage {
   position: absolute;
   left: 50%;
-  bottom: 12px;
+  bottom: calc(22% - 48px);
   transform: translateX(-50%);
   padding: 8px 12px;
   background: rgba(22, 22, 22, 0.86);
-  color: #f6f6f3;
+  color: rgba(248, 248, 245, 0.9);
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -176,32 +176,37 @@
 }
 
 .captureControls {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
+  position: fixed;
+  right: 30px;
+  top: calc(54% - 12px);
+  display: grid;
+  gap: 10px;
+  width: auto;
 }
 
 .captureButtonPrimary,
 .captureButtonSecondary,
 .retryButton {
-  min-height: 34px;
-  padding: 0 14px;
-  border: 1px solid rgba(17, 17, 17, 0.36);
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  border: none;
+  background: #121315;
+  color: #f6f6f3;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .captureButtonPrimary {
-  background: #121315;
-  color: #f6f6f3;
+  width: 58px;
+  height: 58px;
+  border-radius: 999px;
 }
 
 .captureButtonSecondary,
 .retryButton {
+  width: 52px;
+  height: 52px;
+  border-radius: 999px;
   background: rgba(255, 255, 255, 0.72);
   color: #111111;
 }
@@ -210,6 +215,29 @@
 .captureButtonSecondary:disabled {
   opacity: 0.45;
   cursor: not-allowed;
+}
+
+.controlIcon {
+  width: 22px;
+  height: 22px;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+}
+
+.spinningIcon {
+  animation: spinControlIcon 1s linear infinite;
+}
+
+@keyframes spinControlIcon {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .submitError {
@@ -288,23 +316,33 @@
   }
 
   .captureFrame {
-    width: min(100%, 420px);
+    width: min(94%, 300px);
     aspect-ratio: 4 / 5;
   }
 
   .captureControls {
-    width: 100%;
+    position: static;
+    display: flex;
     justify-content: space-between;
     gap: 8px;
+    width: 100%;
   }
 
-  .captureButtonPrimary,
+  .captureButtonPrimary {
+    width: 52px;
+    height: 52px;
+  }
+
   .captureButtonSecondary,
   .retryButton {
-    min-height: 36px;
-    padding: 0 10px;
-    font-size: 0.62rem;
-    letter-spacing: 0.1em;
+    width: 48px;
+    height: 48px;
+  }
+
+  .captureOverlayMessage {
+    bottom: 14px;
+    width: min(94%, 300px);
+    gap: 5px;
   }
 
   .blurToggle {
@@ -312,13 +350,19 @@
     padding: 0 9px;
     font-size: 0.5rem;
   }
+}
 
+@media (max-width: 375px) {
+  .captureFrame {
+    aspect-ratio: 4 / 5.6;
+  }
+}
 
 @media (max-width: 430px) {
   .blurToggle {
     display: none;
   }
-}
+
   .backLink {
     left: 20px;
     bottom: 20px;

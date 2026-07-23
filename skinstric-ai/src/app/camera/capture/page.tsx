@@ -144,7 +144,7 @@ export default function CameraCapturePage() {
     sourceContext.restore();
 
     if (blurActive) {
-      context.filter = "blur(8px)";
+      context.filter = "blur(6.5px)";
       context.drawImage(sourceCanvas, 0, 0);
       context.filter = "none";
 
@@ -285,32 +285,55 @@ export default function CameraCapturePage() {
             <button
               type="button"
               className={styles.captureButtonSecondary}
+              title={capturedImage ? "Retake photo" : undefined}
+              aria-label={capturedImage ? "Retake photo" : undefined}
               onClick={() => {
                 setCapturedImage(null);
               }}
               disabled={!capturedImage}
             >
-              RETAKE
+              <svg className={styles.controlIcon} viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M17 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4z" stroke="currentColor" fill="none" />
+              </svg>
             </button>
             <button
               type="button"
               className={styles.captureButtonPrimary}
+              title={capturedImage ? undefined : cameraStatus === "ready" ? "Capture photo" : "Enable camera"}
+              aria-label={capturedImage ? undefined : cameraStatus === "ready" ? "Capture photo" : "Enable camera"}
               onClick={() => {
-                captureFrame();
+                if (cameraStatus === "ready" && !capturedImage) {
+                  captureFrame();
+                } else if (cameraStatus !== "ready") {
+                  void startCamera();
+                }
               }}
-              disabled={cameraStatus !== "ready" || Boolean(capturedImage)}
+              disabled={Boolean(capturedImage) || submitStatus === "submitting"}
             >
-              CAPTURE
+              <svg className={styles.controlIcon} viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="12" cy="13" r="3.5" stroke="currentColor" fill="none" />
+                <path d="M9 2h6v2H9V2zm10 4h2v2h-2V6zm0 0V4h2c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2h2v2H4v12h16V6h-2z" stroke="currentColor" fill="none" />
+              </svg>
             </button>
             <button
               type="button"
               className={styles.captureButtonPrimary}
+              title={submitStatus === "submitting" ? "Analyzing..." : "Use photo"}
+              aria-label={submitStatus === "submitting" ? "Analyzing..." : "Use photo"}
               onClick={() => {
                 void handleUsePhoto();
               }}
               disabled={!capturedImage || submitStatus === "submitting"}
             >
-              {submitStatus === "submitting" ? "ANALYZING..." : "USE PHOTO"}
+              {submitStatus === "submitting" ? (
+                <svg className={`${styles.controlIcon} ${styles.spinningIcon}`} viewBox="0 0 24 24" aria-hidden="true">
+                  <circle cx="12" cy="12" r="9.5" stroke="currentColor" fill="none" strokeWidth="2" strokeDasharray="15 30" />
+                </svg>
+              ) : (
+                <svg className={styles.controlIcon} viewBox="0 0 24 24" aria-hidden="true">
+                  <polyline points="20 6 9 17 4 12" stroke="currentColor" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              )}
             </button>
           </div>
 

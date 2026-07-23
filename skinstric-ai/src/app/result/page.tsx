@@ -331,7 +331,7 @@ export default function ResultPage() {
           />
         </section>
 
-        <Link className={styles.backLink} href="/take-test">
+        <Link className={styles.backLink} href="/testing">
           <span className={styles.backDiamond} aria-hidden="true" />
           <span className={styles.backLabel}>Back</span>
         </Link>

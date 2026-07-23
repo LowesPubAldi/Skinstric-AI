@@ -48,7 +48,7 @@ export default function Home() {
           </div>
         </section>
 
-        <Link className={`${styles.sideAction} ${styles.sideActionRight}`} href="/take-test">
+        <Link className={`${styles.sideAction} ${styles.sideActionRight}`} href="/testing">
           <span>TAKE TEST</span>
           <span className={styles.actionDiamond}>
             <span className={`${styles.actionTriangle} ${styles.actionTriangleRight}`} aria-hidden="true" />
