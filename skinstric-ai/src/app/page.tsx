@@ -39,12 +39,12 @@ export default function Home() {
               Skinstric developed an A.I. that creates a highly-personalized
               routine tailored to what your skin needs.
             </p>
-            <a className={styles.tabletExperience} href="#experience">
+            <Link className={styles.tabletExperience} href="/testing">
               <span>ENTER EXPERIENCE</span>
               <span className={styles.experienceDiamond}>
                 <span className={styles.actionTriangle} aria-hidden="true" />
               </span>
-            </a>
+            </Link>
           </div>
         </section>
 

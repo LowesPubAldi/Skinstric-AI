@@ -135,10 +135,55 @@
   inset: 50% auto auto 50%;
   z-index: 1;
   display: grid;
+  grid-template-columns: auto auto;
+  grid-template-rows: auto auto auto auto;
+  column-gap: 2px;
+  row-gap: 2px;
   justify-items: center;
-  gap: 8px;
   width: min(100%, 560px);
   transform: translate(-50%, -50%);
+}
+
+.prompt {
+  grid-column: 1 / -1;
+  grid-row: 1;
+}
+
+.errorMessage {
+  grid-column: 1 / -1;
+  grid-row: 2;
+}
+
+.titleDisplay {
+  grid-column: 1;
+  grid-row: 3;
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.titleInput {
+  grid-column: 1;
+  grid-row: 3;
+}
+
+.titleCaret {
+  display: inline-block;
+  margin-left: 0.02em;
+  color: #111111;
+  font-family: var(--font-display);
+  font-size: clamp(2.45rem, 3.75vw, 3.55rem);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.08em;
+  animation: blinkCaret 1.05s steps(2, start) infinite;
+}
+
+.titleUnderline {
+  grid-column: 1 / -1;
+  grid-row: 4;
+  width: min(100%, 404px);
+  border-bottom: 2px solid rgba(17, 17, 17, 0.38);
 }
 
 .prompt {
@@ -167,6 +212,12 @@
 .titleDisplay {
   color: rgba(17, 17, 17, 0.44);
   font-family: var(--font-display);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  grid-column: 1 / -1;
+  justify-self: center;
+  width: max-content;
   font-size: clamp(2.45rem, 3.75vw, 3.55rem);
   font-weight: 400;
   line-height: 0.98;
@@ -240,18 +291,8 @@
   border: 0;
   margin: 0;
   opacity: 0;
+  caret-color: transparent;
   pointer-events: none;
-}
-
-.titleCaret {
-  display: inline-block;
-  color: #111111;
-  font-family: var(--font-display);
-  font-size: clamp(2.45rem, 3.75vw, 3.55rem);
-  font-weight: 400;
-  line-height: 0.98;
-  letter-spacing: -0.08em;
-  animation: blinkCaret 1.05s steps(2, start) infinite;
 }
 
 @keyframes blinkCaret {
@@ -264,11 +305,6 @@
   100% {
     opacity: 1;
   }
-}
-
-.titleUnderline {
-  width: min(100%, 404px);
-  border-bottom: 2px solid rgba(17, 17, 17, 0.38);
 }
 
 .backLink {
@@ -485,8 +521,10 @@
   }
 
   .titleUnderline {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 100%;
-  }
 
   .backLink {
     position: fixed;

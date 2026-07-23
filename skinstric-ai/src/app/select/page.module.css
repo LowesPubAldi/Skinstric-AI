@@ -188,12 +188,18 @@
   height: 100%;
   background: #efeff2;
   box-shadow: inset 0 0 0 6px #fafafa;
-  transition: background-color 120ms ease;
+  transition:
+    background-color 120ms ease,
+    transform 120ms ease,
+    box-shadow 120ms ease;
+  will-change: transform;
 }
 
-.diamondTile:hover {
+.diamondLink:hover {
   background: #d8d8dc;
   box-shadow: inset 0 0 0 6px #fafafa;
+  transform: scale(1.06);
+  z-index: 2;
 }
 
 .diamondLink {
@@ -204,6 +210,13 @@
 
 .diamondDisabled {
   cursor: not-allowed;
+}
+
+.diamondDisabled:hover {
+  background: #efeff2;
+  box-shadow: inset 0 0 0 6px #fafafa;
+  transform: none;
+  z-index: auto;
 }
 
 .diamondDisabled * {

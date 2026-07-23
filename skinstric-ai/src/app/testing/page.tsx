@@ -171,7 +171,15 @@ export default function TakeTestPage() {
             </p>
             {!showProcessing && !showSuccess && (
               <div className={`${styles.titleDisplay} ${hasTypedValue ? styles.titleDisplayActive : ""}`}>
-                {titleDisplay}
+                {step === "name" && !hasTypedValue ? (
+                  <>
+                    <span>Introduce</span>
+                    <span className={styles.titleCaret}>|</span>
+                    <span> Yourself</span>
+                  </>
+                ) : (
+                  titleDisplay
+                )}
               </div>
             )}
             {!showProcessing && !showSuccess && (
@@ -199,9 +207,6 @@ export default function TakeTestPage() {
                 autoCapitalize="words"
                 maxLength={28}
               />
-            )}
-            {!showProcessing && !showSuccess && !hasTypedValue && (
-              <span className={styles.titleCaret}>|</span>
             )}
             {showProcessing && (
               <div className={styles.processingState} aria-live="polite">

@@ -105,6 +105,52 @@
   gap: 18px;
 }
 
+.captureGuidance {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 12px;
+  background: rgba(249, 246, 239, 0.95);
+  z-index: 8;
+}
+
+.captureGuidanceTitle {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-align: center;
+  text-transform: uppercase;
+  color: #111111;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.captureGuidanceList {
+  display: flex;
+  gap: 12px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  justify-content: center;
+  flex-wrap: wrap;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #111111;
+  line-height: 1.2;
+}
+
+.captureGuidanceList li::before {
+  content: "◇";
+  margin-right: 4px;
+}
+
 .captureFrame {
   position: relative;
   width: min(100%, 860px);
@@ -214,7 +260,8 @@
 }
 
 .captureButtonPrimary:disabled,
-.captureButtonSecondary:disabled {
+.captureButtonSecondary:disabled,
+.retryButton:disabled {
   opacity: 0.45;
   cursor: not-allowed;
 }
@@ -255,9 +302,10 @@
 }
 
 .backLink {
-  position: absolute;
-  left: 30px;
-  bottom: 18px;
+  position: static;
+  left: auto;
+  top: auto;
+  transform: none;
   display: inline-flex;
   align-items: center;
   gap: 18px;
@@ -265,6 +313,7 @@
   font-size: 0.98rem;
   font-weight: 700;
   letter-spacing: -0.04em;
+  margin-top: 24px;
 }
 
 .backDiamond {
@@ -289,6 +338,81 @@
 
 .backLabel {
   color: #111111;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  transform: none;
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+  .captureStage {
+    position: relative;
+  }
+
+  .captureFrame {
+    position: relative;
+  }
+
+  .captureControls {
+    position: absolute;
+    right: 16px;
+    bottom: 16px;
+    left: auto;
+    top: auto;
+    display: flex;
+    gap: 12px;
+    width: auto;
+    z-index: 5;
+  }
+
+  .backLink {
+    position: static;
+    left: auto;
+    top: auto;
+    transform: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 18px;
+    margin-top: 20px;
+  }
+
+  .backDiamond {
+    width: 42px;
+    height: 42px;
+  }
+
+  .backDiamond::before {
+    content: "";
+    width: 0;
+    height: 0;
+    border-top: 6px solid transparent;
+    border-bottom: 6px solid transparent;
+    border-right: 8px solid #111111;
+    transform: rotate(-45deg);
+  }
+
+  .backLabel {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    transform: none;
+  }
+
+  .backLabel {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    transform: none;
+  }
 }
 
 @media (max-width: 640px) {
@@ -366,18 +490,28 @@
   }
 
   .backLink {
-    left: 20px;
-    bottom: 20px;
-    width: 42px;
-    height: 42px;
+    position: static;
+    transform: none;
+    left: auto;
+    top: auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     gap: 0;
+    margin-top: 16px;
+    width: auto;
+    height: auto;
+    position: relative;
   }
 
   .backDiamond {
-    position: absolute;
-    inset: 0;
-    width: 42px;
-    height: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: 1px solid rgba(17, 17, 17, 0.45);
+    border-radius: 2px;
   }
 
   .backDiamond::before {
@@ -386,14 +520,14 @@
 
   .backLabel {
     position: absolute;
-    inset: 0;
-    z-index: 1;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.66rem;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 0.5rem;
     font-weight: 700;
     letter-spacing: 0;
     text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
   }
 }

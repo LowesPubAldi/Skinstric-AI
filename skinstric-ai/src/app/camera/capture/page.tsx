@@ -88,6 +88,16 @@ export default function CameraCapturePage() {
     }
   }
 
+  async function handleRetryCamera() {
+    window.localStorage.removeItem(phaseTwoImageStorageKey);
+    window.localStorage.removeItem(phaseTwoImageSourceStorageKey);
+    window.localStorage.removeItem(phaseTwoAnalysisStorageKey);
+    window.localStorage.removeItem("skinstric-phase-two-analysis-ready");
+    setCapturedImage(null);
+    setSubmitStatus("idle");
+    await startCamera();
+  }
+
   useEffect(() => {
     const updateViewport = () => {
       setViewportWidth(window.innerWidth);
@@ -252,6 +262,14 @@ export default function CameraCapturePage() {
       <main className={styles.main}>
         <section className={styles.captureStage} aria-label="Camera capture">
           <div className={styles.captureFrame}>
+            <div className={styles.captureGuidance}>
+              <p className={styles.captureGuidanceTitle}>TO GET BETTER RESULTS MAKE SURE TO HAVE</p>
+              <ul className={styles.captureGuidanceList}>
+                <li>NEUTRAL EXPRESSION</li>
+                <li>FRONTAL POSE</li>
+                <li>ADEQUATE LIGHTING</li>
+              </ul>
+            </div>
             {capturedImage ? (
               <Image
                 className={styles.captureImage}
@@ -284,16 +302,17 @@ export default function CameraCapturePage() {
           <div className={styles.captureControls}>
             <button
               type="button"
-              className={styles.captureButtonSecondary}
-              title={capturedImage ? "Retake photo" : undefined}
-              aria-label={capturedImage ? "Retake photo" : undefined}
+              className={styles.captureButtonPrimary}
+              title="Retry camera"
+              aria-label="Retry camera"
               onClick={() => {
-                setCapturedImage(null);
+                void handleRetryCamera();
               }}
               disabled={!capturedImage}
             >
               <svg className={styles.controlIcon} viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M17 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4z" stroke="currentColor" fill="none" />
+                <path d="M1 4v6h6M23 20v-6h-6" stroke="currentColor" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15" stroke="currentColor" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </button>
             <button
@@ -338,23 +357,6 @@ export default function CameraCapturePage() {
           </div>
 
           {submitStatus === "error" && <p className={styles.submitError}>ANALYSIS FAILED. PLEASE RETRY.</p>}
-
-          {cameraStatus === "error" && (
-            <button
-              type="button"
-              className={styles.retryButton}
-              title="Retry camera"
-              aria-label="Retry camera"
-              onClick={() => {
-                void startCamera();
-              }}
-            >
-              <svg className={styles.controlIcon} viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M1 4v6h6M23 20v-6h-6" stroke="currentColor" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15" stroke="currentColor" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </button>
-          )}
         </section>
 
         <canvas ref={canvasRef} className={styles.hiddenCanvas} />
