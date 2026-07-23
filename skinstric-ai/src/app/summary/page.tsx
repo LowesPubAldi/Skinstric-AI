@@ -2,14 +2,12 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type CSSProperties } from "react";
+import {
+  completeDemographicGroup,
+  type DemographicGroup,
+  type DemographicItem,
+} from "@/lib/phase-two-demographics";
 import styles from "./page.module.css";
-
-type DemographicGroup = "race" | "age" | "gender";
-
-type DemographicItem = {
-  label: string;
-  value: number;
-};
 
 type DemographicResults = Record<DemographicGroup, DemographicItem[]>;
 
@@ -45,15 +43,13 @@ function normalizeResults(raw: AnalysisStorageShape): DemographicResults {
   const stored = raw.results;
   const responseData = raw.response?.data;
 
-  const race = stored?.race?.length
-    ? [...stored.race].sort((first, second) => second.value - first.value)
-    : sortScores(responseData?.race);
-  const age = stored?.age?.length
-    ? [...stored.age].sort((first, second) => second.value - first.value)
-    : sortScores(responseData?.age);
-  const gender = stored?.gender?.length
-    ? [...stored.gender].sort((first, second) => second.value - first.value)
-    : sortScores(responseData?.gender);
+  const race = completeDemographicGroup("race", responseData?.race, stored?.race ?? sortScores(responseData?.race));
+  const age = completeDemographicGroup("age", responseData?.age, stored?.age ?? sortScores(responseData?.age));
+  const gender = completeDemographicGroup(
+    "gender",
+    responseData?.gender,
+    stored?.gender ?? sortScores(responseData?.gender),
+  );
 
   return { race, age, gender };
 }

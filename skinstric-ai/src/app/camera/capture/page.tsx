@@ -4,14 +4,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { completeDemographicGroup, type DemographicGroup } from "@/lib/phase-two-demographics";
 import styles from "./page.module.css";
 
 const phaseTwoImageStorageKey = "skinstric-phase-two-image-base64";
 const phaseTwoImageSourceStorageKey = "skinstric-phase-two-image-source";
 const phaseTwoAnalysisStorageKey = "skinstric-phase-two-analysis";
 const phaseTwoEndpoint = "https://us-central1-frontend-simplified.cloudfunctions.net/skinstricPhaseTwo";
-
-type DemographicGroup = "race" | "age" | "gender";
 
 type PhaseTwoApiResponse = {
   success?: boolean;
@@ -50,12 +49,6 @@ export default function CameraCapturePage() {
 
   const blurSupportedOnViewport = viewportWidth > 430;
   const blurActive = isBlurEnabled && blurSupportedOnViewport;
-
-  function sortDemographicGroup(values: Record<string, number>) {
-    return Object.entries(values)
-      .map(([label, value]) => ({ label, value }))
-      .sort((first, second) => second.value - first.value);
-  }
 
   async function startCamera() {
     if (streamRef.current) {
@@ -206,9 +199,9 @@ export default function CameraCapturePage() {
       const body = (await response.json()) as PhaseTwoApiResponse;
       const data = body.data ?? {};
       const results = {
-        race: data.race ? sortDemographicGroup(data.race) : [],
-        age: data.age ? sortDemographicGroup(data.age) : [],
-        gender: data.gender ? sortDemographicGroup(data.gender) : [],
+        race: completeDemographicGroup("race", data.race),
+        age: completeDemographicGroup("age", data.age),
+        gender: completeDemographicGroup("gender", data.gender),
       };
 
       window.localStorage.setItem(
